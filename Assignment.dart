@@ -54,6 +54,7 @@ class Student extends person implements Role{
 
 
   //***dynamic result***
+ // if i feel need of realtime grade
 
 // dynamicReasult(){
 //
