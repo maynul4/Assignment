@@ -54,6 +54,7 @@ class Student extends person implements Role{
 
 
   //***dynamic result***
+
 // dynamicReasult(){
 //
 //   num sum =0;
