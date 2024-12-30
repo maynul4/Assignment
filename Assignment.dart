@@ -46,10 +46,12 @@ class Student extends person implements Role{
 
   calAvg(){
     num sum =0;
-    for(var x in courseScore!){
-      sum = (sum+x)/courseScore!.length;
+    for(int index = 0; index<courseScore!.length; index++){
+      sum = (sum + courseScore![index]);
     }
-    return sum.toStringAsFixed(2);
+    num avg = sum/courseScore!.length;
+
+    return avg.toStringAsFixed(2);
   }
 
 
@@ -116,7 +118,7 @@ class StudentManagementSystem{
         age: 23,
         studentId: 's1456',
         grade: 'A+',
-        courseScore: [80,82,90]
+        courseScore: [90,85,82]
     );
 
     Teacher teacher = Teacher(
@@ -134,7 +136,7 @@ class StudentManagementSystem{
     print('Name: ${student.getName}');
     print('Age: ${student.getAge}');
     print('Address: ${student.getAddress}');
-    print('CourseScore ${student.calAvg()}');
+    print('Average Score: ${student.calAvg()}');
     // student.dynamicReasult(); //*** optional field***
 
     print('\n');
@@ -156,7 +158,7 @@ class StudentManagementSystem{
 void main(){
   StudentManagementSystem.main();
 
-  StudentManagementSystem syste = StudentManagementSystem();
+
 
 
 }
