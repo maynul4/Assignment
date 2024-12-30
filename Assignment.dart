@@ -131,9 +131,9 @@ class StudentManagementSystem{
     print('-------------------');
 
     student.displayrole();
-    print('Name: ${student.name}');
-    print('Age: ${student.age}');
-    print('Address: ${student.address}');
+    print('Name: ${student.getName}');
+    print('Age: ${student.getAge}');
+    print('Address: ${student.getAddress}');
     print('CourseScore ${student.calAvg()}');
     // student.dynamicReasult(); //*** optional field***
 
@@ -143,9 +143,9 @@ class StudentManagementSystem{
     print('Teacher Information');
     print('--------------------');
     teacher.displayrole();
-    print('Name: ${teacher.name}');
-    print('Age: ${teacher.age}');
-    print('Address: ${teacher.address}');
+    print('Name: ${teacher.getName}');
+    print('Age: ${teacher.getAge}');
+    print('Address: ${teacher.getAddress}');
     print('Course Thought:');
     teacher.displayCourseThought();
   }
