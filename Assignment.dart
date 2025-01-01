@@ -25,7 +25,7 @@ class person implements Role{
 
 } //person
 
-class Student extends person implements Role{
+class Student extends person {
   String? studentId;
   String? grade;
   List? courseScore;
@@ -86,7 +86,7 @@ class Student extends person implements Role{
 
 } //Student
 
-class Teacher extends person implements Role{
+class Teacher extends person {
   String? teacherId;
   List? courseThought;
 
@@ -111,7 +111,7 @@ class Teacher extends person implements Role{
 }//Teacher
 
 class StudentManagementSystem{
-  static void main(){
+  void main(){
     Student student = Student(
         name: 'Maynul',
         address: 'Main Road',
@@ -156,7 +156,9 @@ class StudentManagementSystem{
 //main function
 
 void main(){
-  StudentManagementSystem.main();
+  StudentManagementSystem sms =StudentManagementSystem();
+
+  sms.main();
 
 
 
