@@ -100,9 +100,9 @@ class _AssignmentState extends State<Assignment> {
 
           //Number Field
           Padding(
-            padding: const EdgeInsets.all(10),
+            padding: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
             child: TextFormField(
-              maxLength: 11,
+
               controller: _numberController,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
