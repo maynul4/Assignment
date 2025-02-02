@@ -102,6 +102,7 @@ class _AssignmentState extends State<Assignment> {
                       return null;
                     },
                     controller: _nameController,
+                    inputFormatters: [LengthLimitingTextInputFormatter(20)],
                     keyboardType: TextInputType.text,
                     decoration: InputDecoration(
                         hintText: 'Name',
@@ -122,6 +123,10 @@ class _AssignmentState extends State<Assignment> {
                     },
                     controller: _numberController,
                     keyboardType: TextInputType.number,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly ,
+                      LengthLimitingTextInputFormatter(14)
+                    ],
                     decoration: InputDecoration(
                       hintText: 'Number',
                       labelText: 'Number',
@@ -194,8 +199,8 @@ class _AssignmentState extends State<Assignment> {
                         color: Colors.grey.shade300,
                           child: ListTile(
                           leading: Icon(Icons.person,size: 40,),
-                          title: Text(_contactInfo[index]['Name'],style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold,fontSize: 27),),
-                          subtitle: Text(_contactInfo[index]['Number'], style: TextStyle(color: Colors.black.withOpacity(0.6),fontSize: 17)),
+                          title: Text(_contactInfo[index]['Name'],style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold,fontSize: 20),),
+                          subtitle: Text(_contactInfo[index]['Number'], style: TextStyle(color: Colors.black.withOpacity(0.6),fontSize: 15)),
                           trailing: Icon(Icons.call,size: 30,color: Colors.blue,),
                         )
                       ),
