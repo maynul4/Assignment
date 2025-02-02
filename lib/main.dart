@@ -34,6 +34,8 @@ class Assignment extends StatefulWidget {
   State<Assignment> createState() => _AssignmentState();
 }
 
+final _formKey = GlobalKey<FormState>();
+
 class _AssignmentState extends State<Assignment> {
 
 // List for store data
@@ -42,6 +44,7 @@ class _AssignmentState extends State<Assignment> {
 
   TextEditingController _nameController = TextEditingController();
   TextEditingController _numberController = TextEditingController();
+
 
   addinfo(){
     setState(() {
@@ -84,36 +87,52 @@ class _AssignmentState extends State<Assignment> {
       body: Column(
         children: [
 
-          // Name Field
-          Padding(
-            padding: const EdgeInsets.all(10),
-            child: TextFormField(
-              controller: _nameController,
-              keyboardType: TextInputType.text,
-              decoration: InputDecoration(
-                hintText: 'Name',
-                labelText: 'Name',
-                border: OutlineInputBorder()
-              ),
-            ),
+          Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                // Name Field
+                Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: TextFormField(
+                    validator: (value){
+                      if(value == null || value!.isEmpty){
+                        return 'Name can\'t empty';
+                      }
+                      return null;
+                    },
+                    controller: _nameController,
+                    keyboardType: TextInputType.text,
+                    decoration: InputDecoration(
+                        hintText: 'Name',
+                        labelText: 'Name',
+                        border: OutlineInputBorder()
+                    ),
+                  ),
+                ),
+                //Number Field
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
+                  child: TextFormField(
+                    validator: (value){
+                      if(value == null || value!.isEmpty){
+                        return 'Number can\'t empty';
+                      }
+                      return null;
+                    },
+                    controller: _numberController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      hintText: 'Number',
+                      labelText: 'Number',
+                      border: OutlineInputBorder(),
+
+                    ),
+                  ),
+                ),
+              ],
+            )
           ),
-
-          //Number Field
-          Padding(
-            padding: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
-            child: TextFormField(
-
-              controller: _numberController,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                hintText: 'Number',
-                labelText: 'Number',
-                border: OutlineInputBorder(),
-
-              ),
-            ),
-          ),
-
           //add Button Section
           Container(
             height: 50,
@@ -121,9 +140,9 @@ class _AssignmentState extends State<Assignment> {
             width: double.infinity,
             child: ElevatedButton(
               onPressed: (){
-                addinfo();
-                print(_contactInfo);
-
+                if(_formKey.currentState!.validate()){
+                  return addinfo();
+                }
               },
               child: Text('Add',style: TextStyle(color:Colors.white, fontSize: 25, fontWeight: FontWeight.w400),),
               style: ElevatedButton.styleFrom(
@@ -157,11 +176,11 @@ class _AssignmentState extends State<Assignment> {
                               title: Text('Confirmation'),
                               content: Text('Are you sure for delete?'),
                               actions: [
-                                IconButton(onPressed: (){Navigator.pop(context);}, icon: Icon(Icons.no_sim_outlined)),
+                                IconButton(onPressed: (){Navigator.pop(context);}, icon: Icon(Icons.no_sim_outlined,color: Colors.blue,)),
                                 IconButton(onPressed: (){
                                   removeInfo(index);
                                   Navigator.pop(context);
-                                }, icon: Icon(Icons.delete)),
+                                }, icon: Icon(Icons.delete, color: Colors.blue,)),
                               ],
                             );
                           }
