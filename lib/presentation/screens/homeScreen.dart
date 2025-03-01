@@ -57,16 +57,11 @@ class _homeScreenState extends State<homeScreen> {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              TextField(controller: productNameController, decoration: InputDecoration(hintText: 'Product Name'),
-              ),
-              TextField(controller: imgController, decoration: InputDecoration(hintText: 'Image'),
-              ),
-              TextField(controller: qtyController, decoration: InputDecoration(hintText: 'Quantity'),
-              ),
-              TextField(controller: unitPriceController, decoration: InputDecoration(hintText: 'Unit Price'),
-              ),
-              TextField(controller: totalPriceController, decoration: InputDecoration(hintText: 'Total Price'),
-              ),
+              TextField(controller: productNameController, decoration: InputDecoration(hintText: 'Product Name'),),
+              TextField(controller: imgController, decoration: InputDecoration(hintText: 'Image'),),
+              TextField(controller: qtyController, decoration: InputDecoration(hintText: 'Quantity'),),
+              TextField(controller: unitPriceController, decoration: InputDecoration(hintText: 'Unit Price'),),
+              TextField(controller: totalPriceController, decoration: InputDecoration(hintText: 'Total Price'),),
               SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -236,6 +231,8 @@ class _homeScreenState extends State<homeScreen> {
                           ),
                         ),
 
+                        // Edit and Delete
+
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
@@ -280,6 +277,9 @@ class _homeScreenState extends State<homeScreen> {
           ),
         ],
       ),
+
+      //add product
+
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           alertDialogue();
@@ -287,6 +287,7 @@ class _homeScreenState extends State<homeScreen> {
         child: Icon(Icons.add, size: 40, color: Colors.white),
         backgroundColor: colors.primaryColors,
       ),
+
     );
   }
 }
