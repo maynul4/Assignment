@@ -28,13 +28,7 @@ class _homeScreenState extends State<homeScreen> {
     fetchData();
   }
 
-  alertDialogue({
-    String? id,
-    String? productName,
-    String? img,
-    int? qty,
-    int? unitPrice,
-    int? totalPrice,
+  alertDialogue({String? id,String? productName, String? img, int? qty, int? unitPrice, int? totalPrice,
   }) {
     TextEditingController productNameController = TextEditingController();
     TextEditingController imgController = TextEditingController();
@@ -63,28 +57,17 @@ class _homeScreenState extends State<homeScreen> {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              TextField(
-                controller: productNameController,
-                decoration: InputDecoration(hintText: 'Product Name'),
+              TextField(controller: productNameController, decoration: InputDecoration(hintText: 'Product Name'),
               ),
-              TextField(
-                controller: imgController,
-                decoration: InputDecoration(hintText: 'Image'),
+              TextField(controller: imgController, decoration: InputDecoration(hintText: 'Image'),
               ),
-              TextField(
-                controller: qtyController,
-                decoration: InputDecoration(hintText: 'Quantity'),
+              TextField(controller: qtyController, decoration: InputDecoration(hintText: 'Quantity'),
               ),
-              TextField(
-                controller: unitPriceController,
-                decoration: InputDecoration(hintText: 'Unit Price'),
+              TextField(controller: unitPriceController, decoration: InputDecoration(hintText: 'Unit Price'),
               ),
-              TextField(
-                controller: totalPriceController,
-                decoration: InputDecoration(hintText: 'Total Price'),
+              TextField(controller: totalPriceController, decoration: InputDecoration(hintText: 'Total Price'),
               ),
               SizedBox(height: 20),
-
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -123,7 +106,7 @@ class _homeScreenState extends State<homeScreen> {
                       fetchData();
                     },
                     child: id == null ? Text('Add ') : Text('Update'),
-                    style: buttonStyle(),
+                    style: buttonStyle(), //use from button theme
                   ),
                 ],
               ),
@@ -133,7 +116,7 @@ class _homeScreenState extends State<homeScreen> {
       },
     );
   }
-
+// main Body
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -144,67 +127,72 @@ class _homeScreenState extends State<homeScreen> {
       ),
       body: Column(
         children: [
-          SizedBox(height: 20),
+          SizedBox(height: 2),
           Expanded(
             child: GridView.builder(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
-                mainAxisExtent: 240,
+                mainAxisExtent: 245,
               ),
               itemCount: productController.product.length,
               itemBuilder: (BuildContext context, int index) {
                 var product = productController.product[index];
-                return InkWell(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.purple.shade50,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          //Face image
-                          Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: Container(
-                              height: 160,
-                              width: 155,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.white,
-                              ),
-                              child: ClipRRect(
-                                child: Image.network(
-                                  product.img.toString().trim(),
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Icon(Icons.broken_image),
-                                        Text('Image Not Found'),
-                                      ],
-                                    );
-                                  },
-                                ),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                          ),
-                          Container(
-                            padding: EdgeInsets.all(4),
-                            height: 50,
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Color(0xffe0f4ec),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        //Face image
+                        Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: Container(
+                            height: 130,
                             width: 155,
                             decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
                               color: Colors.white,
+                            ),
+                            child: ClipRRect(
+                              child: Image.network(
+                                product.img.toString().trim(),
+                                fit: BoxFit.cover,
+                                //error Trace
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.center,
+                                    children: [
+                                      Icon(Icons.broken_image),
+                                      Text('Image Not Found'),
+                                    ],
+                                  );
+                                },
+                              ),
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            child: Stack(
-                              children: [
-                                Column(
+                          ),
+                        ),
+
+                        // Product Details card
+
+                        Container(
+                          padding: EdgeInsets.all(4),
+                          height: 40,
+                          width: 155,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Stack(
+                            children: [
+                              Container(
+                               width: 110,
+                                child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
@@ -212,7 +200,7 @@ class _homeScreenState extends State<homeScreen> {
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 1,
                                       style: TextStyle(
-                                        fontSize: 16,
+                                        fontSize: 13,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
@@ -221,91 +209,71 @@ class _homeScreenState extends State<homeScreen> {
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 1,
                                       style: TextStyle(
-                                        fontSize: 10,
+                                        fontSize: 8,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                   ],
                                 ),
-                                Positioned(
-                                  top: 20,
-                                  left: 125,
-                                  child: Container(
-                                    padding: EdgeInsets.all(2),
-                                    decoration: BoxDecoration(
-                                      color: colors.primaryColors,
-                                      borderRadius: BorderRadius.circular(50),
-                                    ),
-                                    child: Icon(
-                                      Icons.add_shopping_cart_rounded,
-                                      color: Colors.white,
-                                      size: 18,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  onLongPress: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          content: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              // Delete product
-                              Card(
-                                child: ListTile(
-                                  title: Text('Delete'),
-                                  trailing: Icon(
-                                    Icons.delete,
-                                    color: colors.primaryColors,
-                                  ),
-                                  onTap: () {
-                                    productController.deleteProduct(
-                                      id: product.sId.toString(),
-                                    );
-                                    Navigator.pop(context);
-                                    fetchData();
-                                    setState(() {});
-                                  },
-                                ),
                               ),
-                              //Update product
-                              Card(
-                                child: ListTile(
-                                  title: Text('Update'),
-                                  trailing: Icon(
-                                    Icons.edit,
+                              Positioned(
+                                top: 2,
+                                left: 115,
+                                child: Container(
+                                  padding: EdgeInsets.all(5),
+                                  decoration: BoxDecoration(
                                     color: colors.primaryColors,
+                                    borderRadius: BorderRadius.circular(50),
                                   ),
-                                  onTap: () {
-                                    Navigator.pop(context);
-                                    alertDialogue(
-                                      productName:
-                                          product.productName.toString(),
-                                      id: product.sId.toString(),
-                                      img: product.img.toString(),
-                                      qty: product.qty,
-                                      unitPrice: product.unitPrice,
-                                      totalPrice: product.totalPrice,
-                                    );
-                                    fetchData();
-                                    setState(() {});
-                                  },
+                                  child: Icon(
+                                    Icons.add_shopping_cart_rounded,
+                                    color: Colors.white,
+                                    size: 18,
+                                  ),
                                 ),
                               ),
                             ],
                           ),
-                        );
-                      },
-                    );
-                  },
+                        ),
+
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            OutlinedButton(
+                              onPressed: () {
+                                alertDialogue(
+                                  productName: product.productName.toString(),
+                                  id: product.sId.toString(),
+                                  img: product.img.toString(),
+                                  qty: product.qty,
+                                  unitPrice: product.unitPrice,
+                                  totalPrice: product.totalPrice,
+                                );
+                                fetchData();
+                                setState(() {});
+                              },
+                              child: Icon(Icons.edit, color: Colors.black),
+                              style: buttonStyle(),
+                            ),
+                            OutlinedButton(
+                              onPressed: () {
+                                productController.deleteProduct(
+                                  id: product.sId.toString(),
+                                );
+                                fetchData();
+                                setState(() {});
+                              },
+                              child: Icon(
+                                Icons.delete_forever,
+                                color: Colors.black,
+                              ),
+                              // style: buttonStyle(),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
                 );
               },
             ),
