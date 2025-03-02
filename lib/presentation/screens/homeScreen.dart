@@ -1,5 +1,6 @@
 import 'package:asignment_m_14/core/theme/colors.dart';
 import 'package:asignment_m_14/data/repositories/repositories.dart';
+import 'package:asignment_m_14/presentation/widgets/Widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -86,6 +87,7 @@ class _homeScreenState extends State<homeScreen> {
                           unitPrice: int.parse(unitPriceController.text),
                           totalPrice: int.parse(totalPriceController.text),
                         );
+                        snackBarMsg(context, 'Product add successfully');
                       } else {
                         await productController.updateProduct(
                           id: id,
@@ -95,6 +97,7 @@ class _homeScreenState extends State<homeScreen> {
                           unitPrice: int.parse(unitPriceController.text),
                           totalPrice: int.parse(totalPriceController.text),
                         );
+                        snackBarMsg(context, 'Product Update Successfully');
                       }
                       setState(() {});
                       Navigator.pop(context);
@@ -253,12 +256,11 @@ class _homeScreenState extends State<homeScreen> {
                               style: buttonStyle(),
                             ),
                             OutlinedButton(
-                              onPressed: () {
-                                productController.deleteProduct(
-                                  id: product.sId.toString(),
-                                );
-                                fetchData();
+                              onPressed: () async {
+                               await productController.deleteProduct(id: product.sId.toString());
+                               await fetchData();
                                 setState(() {});
+                                snackBarMsg(context, 'Product Deleted Successfullty');
                               },
                               child: Icon(
                                 Icons.delete_forever,
