@@ -2,7 +2,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:task_manager_task/data/model/login_model.dart';
 import 'package:task_manager_task/ui/controller/auth_controller.dart';
-import 'package:task_manager_task/ui/widgets/pop_up_message.dart';
 import '../../data/service/network_client.dart';
 import '../../data/utils/urls.dart';
 
