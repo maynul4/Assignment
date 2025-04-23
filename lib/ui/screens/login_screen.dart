@@ -25,7 +25,6 @@ class _LoginScreenState extends State<LoginScreen> {
   bool visiblePassword = false;
   bool isLoading = false;
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,7 +75,13 @@ class _LoginScreenState extends State<LoginScreen> {
                     controller: _passwordTEController,
                     textInputAction: TextInputAction.next,
                     decoration: InputDecoration(
-                      suffixIcon: IconButton(onPressed: _onTapPasswordVisibilityChange, icon: visiblePassword== true? Icon(Icons.visibility_off): Icon(Icons.visibility) ),
+                      suffixIcon: IconButton(
+                        onPressed: _onTapPasswordVisibilityChange,
+                        icon:
+                            visiblePassword == true
+                                ? Icon(Icons.visibility_off)
+                                : Icon(Icons.visibility),
+                      ),
                       hintText: 'Password',
                       border:
                           isIncorrectPassword == true
@@ -96,10 +101,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   SizedBox(height: 16),
                   Visibility(
                     visible: isLoading == false,
-                    replacement: Center(child:  CircularProgressIndicator(),),
+                    replacement: Center(child: CircularProgressIndicator()),
                     child: ElevatedButton(
                       onPressed: _onTapSignInButton,
-                      child: const Icon(Icons.arrow_circle_right_outlined),
+                      child: Visibility(
+                        visible: isLoading == false,
+                        replacement: Center(child: CircularProgressIndicator()),
+                        child: Icon(Icons.arrow_circle_right_outlined),
+                      ),
                     ),
                   ),
 
@@ -152,26 +161,35 @@ class _LoginScreenState extends State<LoginScreen> {
       "password": _passwordTEController.text,
     };
 
+    isLoading = true;
+    setState(() {});
+
     final NetworkResponse response = await NetworkClient.postRequest(
       url: Urls.logInrUrl,
       body: body,
     );
     if (response.statusCode == 200) {
-      setState(() {
-        isLoading = true;
-        isIncorrectPassword = false;
-        LoginModel loginModel = LoginModel.fromJson(response.data!);
-        AuthController.saveUserInformation(loginModel.token, loginModel.userModel);
-        Navigator.pushNamedAndRemoveUntil(context, '/MainBottomNavScreen',(routes)=>false);
-        isLoading = false;
-      });
-
-
+      isLoading = true;
+      isIncorrectPassword = false;
+      LoginModel loginModel = LoginModel.fromJson(response.data!);
+      AuthController.saveUserInformation(
+        loginModel.token,
+        loginModel.userModel,
+      );
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        '/MainBottomNavScreen',
+        (routes) => false,
+      );
+      isLoading = false;
     } else {
       isIncorrectPassword = true;
       setState(() {});
     }
+    isLoading = false;
+    setState(() {});
   }
+
   _onTapSignUpButton() {
     Navigator.pushNamed(context, '/register');
   }
@@ -180,7 +198,7 @@ class _LoginScreenState extends State<LoginScreen> {
     Navigator.pushNamed(context, '/forgetPasswordEmail');
   }
 
-  _onTapPasswordVisibilityChange(){
+  _onTapPasswordVisibilityChange() {
     setState(() {
       visiblePassword = !visiblePassword;
     });

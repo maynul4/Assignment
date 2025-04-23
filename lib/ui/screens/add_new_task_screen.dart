@@ -5,7 +5,6 @@ import 'package:task_manager_task/ui/widgets/pop_up_message.dart';
 import '../widgets/screen_background.dart';
 
 class AddNewTaskScreen extends StatefulWidget {
-
   const AddNewTaskScreen({super.key});
 
   @override
@@ -25,6 +24,8 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
     final args = ModalRoute.of(context)!.settings.arguments as VoidCallback;
     updateAaddTask = args;
   }
+
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +81,11 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
 
                   ElevatedButton(
                     onPressed: _onTaskSubmit,
-                    child: const Icon(Icons.arrow_circle_right_outlined),
+                    child: Visibility(
+                      visible: isLoading == false,
+                      replacement: Center(child: CircularProgressIndicator(),),
+                      child: Icon(Icons.arrow_circle_right_outlined),
+                    ),
                   ),
                 ],
               ),
@@ -105,7 +110,8 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
       "status": "New",
     };
     String url = Urls.createTaskUrl;
-
+    isLoading = true;
+    setState(() {});
     NetworkResponse response = await NetworkClient.postRequest(
       url: url,
       body: requestBody,
@@ -125,6 +131,8 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
         showPopUp(context, response.errorMessage);
       }
     }
+    isLoading = false;
+    setState(() {});
   }
 
   @override

@@ -212,9 +212,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
       _clearAllTextField();
       if (!mounted) return;
       showPopUp(context, 'Registration Successfully');
-    } else {
-      if (!mounted) return;
-       showPopUp(context, response.data!['data'] ?? "Something went wrong");
+    } else  {
+      print('Registration fail due to invalid mail');
     }
     _isRegisterLoading = false;
     setState(() {
