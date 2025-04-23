@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:logger/logger.dart';
@@ -8,7 +7,6 @@ import 'package:task_manager_task/data/model/user_model.dart';
 import 'package:task_manager_task/data/service/network_client.dart';
 import 'package:task_manager_task/data/utils/urls.dart';
 import 'package:task_manager_task/ui/controller/auth_controller.dart';
-import 'package:task_manager_task/ui/widgets/pop_up_message.dart';
 import '../widgets/screen_background.dart';
 import '../widgets/tm_app_bar.dart';
 
@@ -45,6 +43,15 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     _lastNameTEController.text = userModel.lastName;
     _mobileTEController.text = userModel.mobile;
     super.initState();
+  }
+
+  VoidCallback? onUpdate;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final args = ModalRoute.of(context)!.settings.arguments as VoidCallback;
+    onUpdate = args;
   }
 
   @override
@@ -190,63 +197,67 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     if (_passwordTEController.text.isNotEmpty) {
       requestBody['password'] = _passwordTEController.text;
     }
-    if(pickedImage != null){
+    if (pickedImage != null) {
       List<int> imageByte = await pickedImage!.readAsBytes();
       String encodedImage = base64Encode(imageByte);
       requestBody['photo'] = encodedImage;
     }
-
-
-      NetworkResponse response = await NetworkClient.postRequest(
-        url: Urls.updateProfileUrl,
-        body: requestBody,
-      );
-      if (response.statusCode == 200) {
-        getProfileDetails();
-        setState(() {});
-      } else {
-        _logger.e(response.errorMessage);
-      }
-
+    NetworkResponse response = await NetworkClient.postRequest(
+      url: Urls.updateProfileUrl,
+      body: requestBody,
+    );
+    if (response.statusCode == 200) {
+      getProfileDetails();
+      setState(() {});
+    } else {
+      _logger.e(response.errorMessage);
+    }
   }
 
   Future<void> getProfileDetails() async {
     NetworkResponse response = await NetworkClient.getRequest(
       url: Urls.profileDetailsUrl,
     );
-    if(response.statusCode == 200){
-
+    if (response.statusCode == 200) {
       String token = AuthController.token!;
 
       Map<String, dynamic> userDetailsMap = response.data!['data'][0];
       _logger.w(userDetailsMap);
-      UpdateProfileModel updateProfileModel = UpdateProfileModel.fromJson(response.data!);
+      UpdateProfileModel updateProfileModel = UpdateProfileModel.fromJson(
+        response.data!,
+      );
 
-      Map<String, dynamic>prepareJsonDataForInitiatingUserModel ={
+      Map<String, dynamic> prepareJsonDataForInitiatingUserModel = {
         "_id": updateProfileModel.data.id,
         "email": updateProfileModel.data.email,
         "firstName": updateProfileModel.data.firstName,
         "lastName": updateProfileModel.data.lastName,
         "mobile": updateProfileModel.data.mobile,
         "createdDate": updateProfileModel.data.createdDate,
-        "photo":updateProfileModel.data.photo
+        "photo": updateProfileModel.data.photo,
       };
-      UserModel userModel = UserModel.convertJsonToDart(prepareJsonDataForInitiatingUserModel);
+      UserModel userModel = UserModel.convertJsonToDart(
+        prepareJsonDataForInitiatingUserModel,
+      );
 
-      await AuthController.saveUserInformation(token, userModel );
+      await AuthController.saveUserInformation(token, userModel);
       await AuthController.getUserInformation();
-      if(AuthController.token != null){
+      if (AuthController.token != null) {
         _logger.i('State update Successfully ${AuthController.userInfoModel}');
-
-        setState(() {
-
-        });
-      }
-      else{
+        setState(() {});
+        if(onUpdate != null){
+          _logger.w('Got the notifier from update screen');
+          onUpdate!();
+        }else{
+          _logger.e('Failed to got the notifier form profile update screen');
+        }
+      } else {
         _logger.e('Fail to update the state');
       }
     }
   }
+
+
 
   Future<void> imagePicker() async {
     final picker = ImagePicker();

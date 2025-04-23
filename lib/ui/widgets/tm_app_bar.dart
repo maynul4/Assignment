@@ -1,12 +1,13 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:task_manager_task/ui/controller/auth_controller.dart';
 
 class TMAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const TMAppBar({super.key, this.fromProfileScreen});
-
+  final VoidCallback? onUpdate;
   final bool? fromProfileScreen;
+  const TMAppBar({super.key, this.fromProfileScreen, this.onUpdate});
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +76,15 @@ class TMAppBar extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize => Size.fromHeight(kToolbarHeight);
 
   void _onTapProfileUpdate(BuildContext context) {
-    Navigator.pushNamed(context, '/UpdateProfileScreen');
+    Navigator.pushNamed(
+      context,
+      '/UpdateProfileScreen',
+      arguments: (){
+        // AuthController.getUserInformation();
+        onUpdate!();
+        Logger().w('Got the notifier from TMAPP Bar');
+      }
+    );
   }
 
   fullName({required String firstName, required String lastName}) {

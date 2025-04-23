@@ -27,9 +27,9 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
   List<TaskStatusCountModel> _taskStatusCount = [];
 
   bool isLoading = false;
-  late  List<TaskDetailsModel> taskList;
+  late List<TaskDetailsModel> taskList;
 
-  Future<void>_refreshTask()async{
+  Future<void> _refreshTask() async {
     await getTask();
     await getAllTaskStatusCount();
   }
@@ -47,7 +47,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
           isLoading
               ? Center(child: const CircularProgressIndicator())
               : RefreshIndicator(
-                onRefresh: _refreshTask ,
+                onRefresh: _refreshTask,
                 child: ListView(
                   children: [
                     Column(
@@ -61,7 +61,8 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
 
                               children: [
                                 SizedBox(
-                                  height: MediaQuery.of(context).size.height / 3,
+                                  height:
+                                      MediaQuery.of(context).size.height / 3,
                                 ),
                                 Center(child: Text('Empty')),
                               ],
@@ -82,7 +83,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
                                   taskTitle: task.title,
                                   taskDescription: task.description,
                                   date: dateOnly,
-                                  onDelete: ()async{
+                                  onDelete: () async {
                                     taskList.removeAt(index);
                                     await getAllTaskStatusCount(); // Update summary
                                     setState(() {});
@@ -115,7 +116,15 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
   }
 
   _onTapAddTask() {
-    Navigator.pushNamed(context, '/AddNewTaskScreen');
+    Navigator.pushNamed(
+      context,
+      '/AddNewTaskScreen',
+      arguments: (){
+          getAllTaskStatusCount();
+          getTask();
+          setState(() {});
+      }
+    );
   }
 
   Future<void> getAllTaskStatusCount() async {

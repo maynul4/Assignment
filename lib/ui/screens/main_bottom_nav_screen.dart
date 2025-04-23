@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import '../widgets/tm_app_bar.dart';
 import 'cancel_task_screen.dart';
 import 'completed_task_screen.dart';
@@ -25,10 +26,16 @@ class _MainBottomNavScreenState extends State<MainBottomNavScreen> {
     CancelTaskScreen(),
     InProgressTaskScreen(),
   ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: TMAppBar(),
+      appBar: TMAppBar(
+        onUpdate: () {
+          setState(() {});
+          Logger().w('Got the notifier from mainBottom ');
+        },
+      ),
       body: _screens[selectedIndex],
       bottomNavigationBar: NavigationBar(
         selectedIndex: selectedIndex,
@@ -37,16 +44,21 @@ class _MainBottomNavScreenState extends State<MainBottomNavScreen> {
           setState(() {});
         },
         destinations: const [
-          NavigationDestination(icon: Icon(Icons.newspaper,color: Colors.blue), label: 'New'),
           NavigationDestination(
-            icon: Icon(Icons.deblur_sharp,color: Colors.green,),
+            icon: Icon(Icons.newspaper, color: Colors.blue),
+            label: 'New',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.deblur_sharp, color: Colors.green),
             label: 'Completed',
           ),
-          NavigationDestination(icon: Icon(Icons.cancel,color: Colors.redAccent,), label: 'Canceled'),
           NavigationDestination(
-            icon: Icon(Icons.run_circle_rounded,color: Colors.purple,),
+            icon: Icon(Icons.cancel, color: Colors.redAccent),
+            label: 'Canceled',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.run_circle_rounded, color: Colors.purple),
             label: 'Progress',
-
           ),
         ],
       ),

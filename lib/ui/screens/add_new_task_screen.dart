@@ -5,6 +5,7 @@ import 'package:task_manager_task/ui/widgets/pop_up_message.dart';
 import '../widgets/screen_background.dart';
 
 class AddNewTaskScreen extends StatefulWidget {
+
   const AddNewTaskScreen({super.key});
 
   @override
@@ -15,6 +16,15 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _detailsController = TextEditingController();
+
+  VoidCallback? updateAaddTask;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final args = ModalRoute.of(context)!.settings.arguments as VoidCallback;
+    updateAaddTask = args;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -105,6 +115,7 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
       showPopUp(context, 'Task Added');
       _titleController.clear();
       _detailsController.clear();
+      updateAaddTask!();
     } else {
       if (response.errorMessage == null) {
         if (!mounted) return;
