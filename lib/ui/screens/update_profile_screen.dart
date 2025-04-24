@@ -245,10 +245,10 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
       if (AuthController.token != null) {
         _logger.i('State update Successfully ${AuthController.userInfoModel}');
         setState(() {});
-        if(onUpdate != null){
+        if (onUpdate != null) {
           _logger.w('Got the notifier from update screen');
           onUpdate!();
-        }else{
+        } else {
           _logger.e('Failed to got the notifier form profile update screen');
         }
       } else {
@@ -256,8 +256,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
       }
     }
   }
-
-
 
   Future<void> imagePicker() async {
     final picker = ImagePicker();

@@ -3,7 +3,7 @@ import '../../data/model/task_list_model.dart';
 import '../../data/service/network_client.dart';
 import '../../data/utils/urls.dart';
 
- Future<List<TaskDetailsModel>> getTaskListByStatus({
+Future<List<TaskDetailsModel>> getTaskListByStatus({
   required String status,
 }) async {
   List<TaskDetailsModel> taskList = [];

@@ -7,6 +7,7 @@ import 'package:task_manager_task/ui/controller/auth_controller.dart';
 class TMAppBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback? onUpdate;
   final bool? fromProfileScreen;
+
   const TMAppBar({super.key, this.fromProfileScreen, this.onUpdate});
 
   @override
@@ -79,11 +80,11 @@ class TMAppBar extends StatelessWidget implements PreferredSizeWidget {
     Navigator.pushNamed(
       context,
       '/UpdateProfileScreen',
-      arguments: (){
+      arguments: () {
         // AuthController.getUserInformation();
         onUpdate!();
         Logger().w('Got the notifier from TMAPP Bar');
-      }
+      },
     );
   }
 

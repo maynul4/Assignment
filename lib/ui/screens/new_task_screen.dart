@@ -79,13 +79,17 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
                                 String dateOnly = dateTime.split('T')[0];
                                 return TaskCard(
                                   id: task.id,
-                                  status: TaskStatusControl.sNew,
+                                  status: 'New',
                                   taskTitle: task.title,
                                   taskDescription: task.description,
                                   date: dateOnly,
                                   onDelete: () async {
                                     taskList.removeAt(index);
                                     await getAllTaskStatusCount(); // Update summary
+                                    setState(() {});
+                                  },
+                                  onUpdateRefreshScreen: () async {
+                                    await getTask();
                                     setState(() {});
                                   },
                                 );
@@ -119,16 +123,17 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
     Navigator.pushNamed(
       context,
       '/AddNewTaskScreen',
-      arguments: (){
-          getAllTaskStatusCount();
-          getTask();
-          setState(() {});
-      }
+      arguments: () {
+        getAllTaskStatusCount();
+        getTask();
+        setState(() {});
+      },
     );
   }
 
   Future<void> getAllTaskStatusCount() async {
-    setState(() => isLoading = true);
+    isLoading = true;
+    setState(() {});
     final NetworkResponse response = await NetworkClient.getRequest(
       url: Urls.taskStatusCountUrl,
     );
@@ -141,12 +146,19 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
       if (!mounted) return;
       showPopUp(context, response.errorMessage);
     }
-    setState(() => isLoading = false);
+    isLoading = false;
+    setState(() {});
   }
 
   Future<void> getTask() async {
-    setState(() => isLoading = true);
-    taskList = await getTaskListByStatus(status: 'New');
-    setState(() => isLoading = false);
+    isLoading = true;
+    setState(() {});
+    try {
+      taskList = await getTaskListByStatus(status: 'New');
+    } catch (e) {
+      print(e);
+    }
+    isLoading = false;
+    setState(() {});
   }
 }

@@ -133,9 +133,8 @@ class _ForgetPasswordEmailVerifyScreenState
     } else {
       isLoading = false;
       setState(() {});
-      if(!mounted) return;
-      showPopUp(context, 'Email not found',true);
-
+      if (!mounted) return;
+      showPopUp(context, 'Email not found', true);
     }
     isLoading = false;
     setState(() {});

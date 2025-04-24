@@ -8,7 +8,6 @@ class Urls {
   static final createTaskUrl = '$_baseUrl/createTask';
   static final resetPasswordRrl = '$_baseUrl/RecoverResetPassword';
 
-
   static getTaskUrl(status) {
     return '$_baseUrl/listTaskByStatus/$status';
   }
@@ -25,10 +24,11 @@ class Urls {
     return '$_baseUrl/RecoverVerifyEmail/$email';
   }
 
-  static forgetPasswordEmailAndOPTVerify({email, otp}) {
+  static forgetPasswordEmailAndOPTVerifyUrl({email, otp}) {
     return '$_baseUrl/RecoverVerifyOtp/$email/$otp';
   }
 
-
+  static updateTaskStatusUrl({required String taskId, required status}) {
+    return '$_baseUrl/updateTaskStatus/$taskId/$status';
+  }
 }
-

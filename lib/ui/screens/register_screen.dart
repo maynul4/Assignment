@@ -24,9 +24,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   bool passwordVisibility = true;
 
-
-
-
   static bool _isRegisterLoading = false;
 
   _passwordVisibilityStateControl() {
@@ -61,14 +58,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     decoration: InputDecoration(hintText: 'Email'),
                     autovalidateMode: AutovalidateMode.disabled,
                     validator: (String? value) {
-                        return validator(
-                            value!,
-                            isEmptyTitle: 'Enter your mail address',
-                            alertTitle: 'Enter a valid mail',
-                            regExp: RegExp(
-                              r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
-                            )
-                        );
+                      return validator(
+                        value!,
+                        isEmptyTitle: 'Enter your mail address',
+                        alertTitle: 'Enter a valid mail',
+                        regExp: RegExp(
+                          r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+                        ),
+                      );
                     },
                   ),
                   SizedBox(height: 10),
@@ -107,24 +104,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     validator: (String? value) {
                       return validator(
                         value!,
-                        regExp: RegExp(
-                          r'^(?:\+8801|8801|01)[3-9]\d{8}$',
-                        ),
+                        regExp: RegExp(r'^(?:\+8801|8801|01)[3-9]\d{8}$'),
                         isEmptyTitle: 'Enter your Mobile Number',
-                        alertTitle: 'Enter a valid mobile number'
+                        alertTitle: 'Enter a valid mobile number',
                       );
                     },
                   ),
                   SizedBox(height: 10),
                   TextFormField(
                     autovalidateMode: AutovalidateMode.disabled,
-                    validator: (String ?value){
-                      if(value!.isEmpty== true){
+                    validator: (String? value) {
+                      if (value!.isEmpty == true) {
                         return "Enter your password";
-                      }else if(value.length <6){
+                      } else if (value.length < 6) {
                         return 'Password min 6 char';
                       }
-                      return null ;
+                      return null;
                     },
                     obscureText: !passwordVisibility,
                     textInputAction: TextInputAction.next,
@@ -189,7 +184,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   _onTapSubmit() {
-    if(_formKey.currentState!.validate() == true){
+    if (_formKey.currentState!.validate() == true) {
       register();
     }
   }
@@ -212,12 +207,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
       _clearAllTextField();
       if (!mounted) return;
       showPopUp(context, 'Registration Successfully');
-    } else  {
+    } else {
       print('Registration fail due to invalid mail');
     }
     _isRegisterLoading = false;
-    setState(() {
-    });
+    setState(() {});
   }
 
   _onTapSignInButton() {
@@ -230,7 +224,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _lastNameTEContrller.clear();
     _mobileTEContrller.clear();
     _passwordlTEContrller.clear();
-
   }
 
   @override

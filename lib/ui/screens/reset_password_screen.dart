@@ -33,6 +33,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       });
     }
   }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -203,6 +204,4 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     _cfmPasswordTEController.dispose();
     super.dispose();
   }
-
-
 }

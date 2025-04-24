@@ -58,16 +58,23 @@ class NetworkClient {
         );
       }
     } catch (e) {
-      if(e is SocketException){
-        showPopUp(TaskManager.navigatorKey.currentContext, 'Check your internet connection');
-      }
-        _postRequestLog(-1, url);
-        return NetworkResponse(
-          isSuccess: false,
-          statusCode: -1,
-          errorMessage: e.toString(),
+      if (e is SocketException) {
+        showPopUp(
+          TaskManager.navigatorKey.currentContext,
+          'Check your internet connection',
         );
-
+      } else {
+        showPopUp(
+          TaskManager.navigatorKey.currentContext,
+          'Something went wrong',
+        );
+      }
+      _postRequestLog(-1, url);
+      return NetworkResponse(
+        isSuccess: false,
+        statusCode: -1,
+        errorMessage: e.toString(),
+      );
     }
   }
 
@@ -112,20 +119,25 @@ class NetworkClient {
         final decodedJson = jsonDecode(response.body);
         String errorMessage = decodedJson['data'];
         _postRequestLog(-1, url, errorMessage: errorMessage);
-        showPopUp(TaskManager.navigatorKey.currentContext, errorMessage,true);
+        showPopUp(TaskManager.navigatorKey.currentContext, errorMessage, true);
         return NetworkResponse(
           isSuccess: false,
           statusCode: response.statusCode,
           data: decodedJson,
-          errorMessage: errorMessage
+          errorMessage: errorMessage,
         );
       }
     } catch (e) {
-      if(e is SocketException){
-        showPopUp(TaskManager.navigatorKey.currentContext, 'Check your internet connection');
-      }else if(e is FormatException){
-
-        showPopUp(TaskManager.navigatorKey.currentContext,'Try with a small size image');
+      if (e is SocketException) {
+        showPopUp(
+          TaskManager.navigatorKey.currentContext,
+          'Check your internet connection',
+        );
+      } else {
+        showPopUp(
+          TaskManager.navigatorKey.currentContext,
+          'Something went wrong',
+        );
       }
       _postRequestLog(-1, url, errorMessage: e.toString());
       return NetworkResponse(

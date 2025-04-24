@@ -30,6 +30,7 @@ class _ForgetPasswordOtpVerificationScreenState
   String? receivedEmail;
 
   bool isLoading = false;
+  bool _isDisposed = false;
 
   @override
   Widget build(BuildContext context) {
@@ -139,39 +140,38 @@ class _ForgetPasswordOtpVerificationScreenState
 
   Future<void> forgetPasswordOTPVerify() async {
     final String otp = _otpTEController.text;
+    if (_isDisposed) return;
+
+    Map<String,dynamic> authDataForSetPassword= {'email': receivedEmail, 'OTP': otp};
+
 
     isLoading = true;
     setState(() {});
 
-    String url = Urls.forgetPasswordEmailAndOPTVerify(
+    String url = Urls.forgetPasswordEmailAndOPTVerifyUrl(
       email: receivedEmail,
       otp: otp,
     );
     NetworkResponse response = await NetworkClient.getRequest(url: url);
-
+    if (_isDisposed) return;
+    _otpTEController.clear();
     if (!mounted) return;
-
     if (response.statusCode == 200) {
       Navigator.pushNamedAndRemoveUntil(
         context,
         '/resetPassword',
         (route) => false,
-        arguments: {'email': receivedEmail, 'OTP': _otpTEController.text},
+        arguments: authDataForSetPassword,
       );
       return;
     } else {
       showPopUp(context, 'Invalid OTP !!!', true);
     }
     isLoading = false;
+    setState(() {});
   }
-
   _onTapSignInButton() {
+    if (_isDisposed) return;
     Navigator.pushNamed(context, '/login');
-  }
-
-  @override
-  void dispose() {
-    _otpTEController.dispose();
-    super.dispose();
   }
 }

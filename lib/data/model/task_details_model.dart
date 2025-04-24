@@ -12,17 +12,17 @@ class TaskDetailsModel {
     required this.description,
     required this.status,
     required this.email,
-    required this.createdDate
+    required this.createdDate,
   });
 
-  factory TaskDetailsModel.fromJson(Map<String, dynamic>jsonData){
+  factory TaskDetailsModel.fromJson(Map<String, dynamic> jsonData) {
     return TaskDetailsModel(
-        id: jsonData['_id'],
-        title: jsonData['title'],
-        description: jsonData['description'],
-        status: jsonData['status'],
-        email: jsonData['email'],
-        createdDate: jsonData['createdDate']
+      id: jsonData['_id'],
+      title: jsonData['title'],
+      description: jsonData['description'],
+      status: jsonData['status'],
+      email: jsonData['email'],
+      createdDate: jsonData['createdDate'],
     );
   }
 }

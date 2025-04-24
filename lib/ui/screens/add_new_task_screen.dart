@@ -83,7 +83,7 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
                     onPressed: _onTaskSubmit,
                     child: Visibility(
                       visible: isLoading == false,
-                      replacement: Center(child: CircularProgressIndicator(),),
+                      replacement: Center(child: CircularProgressIndicator()),
                       child: Icon(Icons.arrow_circle_right_outlined),
                     ),
                   ),

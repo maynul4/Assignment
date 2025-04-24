@@ -9,6 +9,8 @@ import 'new_task_screen.dart';
 class MainBottomNavScreen extends StatefulWidget {
   const MainBottomNavScreen({super.key});
 
+
+
   @override
   State<MainBottomNavScreen> createState() => _MainBottomNavScreenState();
 }
@@ -22,9 +24,9 @@ class _MainBottomNavScreenState extends State<MainBottomNavScreen> {
   int selectedIndex = 0;
   final List<Widget> _screens = [
     NewTaskScreen(),
+    InProgressTaskScreen(),
     CompletedTaskScreen(),
     CancelTaskScreen(),
-    InProgressTaskScreen(),
   ];
 
   @override
@@ -49,16 +51,16 @@ class _MainBottomNavScreenState extends State<MainBottomNavScreen> {
             label: 'New',
           ),
           NavigationDestination(
-            icon: Icon(Icons.deblur_sharp, color: Colors.green),
+            icon: Icon(Icons.run_circle_rounded, color: Colors.purple),
+            label: 'Progress',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.check_circle_rounded, color: Colors.green),
             label: 'Completed',
           ),
           NavigationDestination(
             icon: Icon(Icons.cancel, color: Colors.redAccent),
             label: 'Canceled',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.run_circle_rounded, color: Colors.purple),
-            label: 'Progress',
           ),
         ],
       ),

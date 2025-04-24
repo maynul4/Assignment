@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 class SummaryCard extends StatelessWidget {
   SummaryCard({super.key, required this.title, required this.count});
 

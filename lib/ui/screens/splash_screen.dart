@@ -7,6 +7,7 @@ import '../widgets/screen_background.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
+
   @override
   State<SplashScreen> createState() => _SplashScreenState();
 }
@@ -18,27 +19,26 @@ class _SplashScreenState extends State<SplashScreen> {
     _moveToNextScreen();
   }
 
-
   Future<void> _moveToNextScreen() async {
     await Future.delayed(const Duration(seconds: 2));
 
     bool isLoggedIn = await AuthController.checkIfUserLoggedIn();
 
-    if(!mounted)return;
+    if (!mounted) return;
     // Navigator.pushNamedAndRemoveUntil(context, '/login',(routes)=>false);
 
-      Navigator.pushNamedAndRemoveUntil(context, isLoggedIn? '/MainBottomNavScreen': '/login', (routes)=>false);
-
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      isLoggedIn ? '/MainBottomNavScreen' : '/login',
+      (routes) => false,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: ScreenBackground(
-        child: Center(child: SvgPicture.asset(
-            AssetsPath.logoSvg,
-            width: 120)
-        ),
+        child: Center(child: SvgPicture.asset(AssetsPath.logoSvg, width: 120)),
       ),
     );
   }
