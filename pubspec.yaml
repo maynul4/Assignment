@@ -42,6 +42,7 @@ dependencies:
   logger: ^2.5.0
   shared_preferences: ^2.5.3
   custom_refresh_indicator: ^4.0.1
+  get: ^4.7.2
 
 
 dev_dependencies:

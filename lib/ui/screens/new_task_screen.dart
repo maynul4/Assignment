@@ -27,7 +27,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
   List<TaskStatusCountModel> _taskStatusCount = [];
 
   bool isLoading = false;
-  late List<TaskDetailsModel> taskList;
+  List<TaskDetailsModel> taskList = [] ;
 
   Future<void> _refreshTask() async {
     await getTask();
