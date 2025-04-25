@@ -69,8 +69,10 @@ class TMAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   _onTapLogOut(context) async {
+
     await AuthController.clearUserData();
     Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+
   }
 
   @override
