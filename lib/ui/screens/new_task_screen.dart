@@ -88,8 +88,10 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
                                     await getAllTaskStatusCount(); // Update summary
                                     setState(() {});
                                   },
+
                                   onUpdateRefreshScreen: () async {
                                     await getTask();
+                                    await getAllTaskStatusCount();
                                     setState(() {});
                                   },
                                 );
