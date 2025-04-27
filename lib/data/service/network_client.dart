@@ -1,11 +1,10 @@
 import 'dart:convert';
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart';
 import 'package:logger/logger.dart';
 import 'package:task_manager_task/app.dart';
 import 'package:task_manager_task/ui/controller/auth_controller.dart';
+import 'package:task_manager_task/ui/widgets/handel_exception.dart';
 import 'package:task_manager_task/ui/widgets/pop_up_message.dart';
 
 class NetworkResponse {
@@ -58,17 +57,7 @@ class NetworkClient {
         );
       }
     } catch (e) {
-      if (e is SocketException) {
-        showPopUp(
-          TaskManager.navigatorKey.currentContext,
-          'Check your internet connection',
-        );
-      } else {
-        showPopUp(
-          TaskManager.navigatorKey.currentContext,
-          'Something went wrong',
-        );
-      }
+      handelException(e);
       _postRequestLog(-1, url);
       return NetworkResponse(
         isSuccess: false,
@@ -128,17 +117,7 @@ class NetworkClient {
         );
       }
     } catch (e) {
-      if (e is SocketException) {
-        showPopUp(
-          TaskManager.navigatorKey.currentContext,
-          'Check your internet connection',
-        );
-      } else {
-        showPopUp(
-          TaskManager.navigatorKey.currentContext,
-          'Something went wrong',
-        );
-      }
+      handelException(e);
       _postRequestLog(-1, url, errorMessage: e.toString());
       return NetworkResponse(
         isSuccess: false,
@@ -193,3 +172,5 @@ class NetworkClient {
     );
   }
 }
+
+

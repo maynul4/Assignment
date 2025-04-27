@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:task_manager_task/data/model/task_details_model.dart';
-import '../widgets/get_task_list_by_status.dart';
+import 'package:logger/logger.dart';
+import 'package:task_manager_task/ui/controller/get_task_by_status_controller.dart';
 import '../widgets/task_card.dart';
+import 'package:get/get.dart';
 
 class CompletedTaskScreen extends StatefulWidget {
   const CompletedTaskScreen({super.key});
@@ -12,7 +13,9 @@ class CompletedTaskScreen extends StatefulWidget {
 
 class _CompletedTaskScreenState extends State<CompletedTaskScreen> {
   bool isLoading = false;
-  List<TaskDetailsModel> taskList = [];
+
+  GetTaskByStatusController getTaskByStatusController =
+      Get.find<GetTaskByStatusController>();
 
   @override
   void initState() {
@@ -27,56 +30,65 @@ class _CompletedTaskScreenState extends State<CompletedTaskScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: RefreshIndicator(
-        onRefresh: _onRefresh,
-        child:
-            isLoading
-                ? ListView(
-                  children: const [
-                    SizedBox(height: 300),
-                    Center(child: CircularProgressIndicator()),
-                  ],
-                )
-                : taskList.isEmpty
-                ? ListView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  children: [
-                    SizedBox(height: MediaQuery.of(context).size.height / 3),
-                    const Center(child: Text("Empty")),
-                  ],
-                )
-                : ListView.separated(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  itemCount: taskList.length,
-                  separatorBuilder:
-                      (context, index) => const SizedBox(height: 10),
-                  itemBuilder: (BuildContext context, int index) {
-                    var task = taskList[index];
-                    String dateOnly = task.createdDate.split('T')[0];
-                    return TaskCard(
-                      id: task.id,
-                      status: 'Completed',
-                      taskTitle: task.title,
-                      taskDescription: task.description,
-                      date: dateOnly,
-                      onDelete: () async {
-                        setState(() => taskList.removeAt(index));
+      body: GetBuilder<GetTaskByStatusController>(
+        builder: (controller) {
+          return RefreshIndicator(
+            onRefresh: _onRefresh,
+            child:
+                getTaskByStatusController.isLoading
+                    ? ListView(
+                      children: const [
+                        SizedBox(height: 300),
+                        Center(child: CircularProgressIndicator()),
+                      ],
+                    )
+                    : getTaskByStatusController.taskList.isEmpty
+                    ? ListView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      children: [
+                        SizedBox(height: MediaQuery.of(context).size.height / 3),
+                        const Center(child: Text("Empty")),
+                      ],
+                    )
+                    : ListView.separated(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      itemCount: getTaskByStatusController.taskList.length,
+                      separatorBuilder:
+                          (context, index) => const SizedBox(height: 10),
+                      itemBuilder: (BuildContext context, int index) {
+                        var task = getTaskByStatusController.taskList[index];
+                        String dateOnly = task.createdDate.split('T')[0];
+                        return TaskCard(
+                          id: task.id,
+                          status: 'Completed',
+                          taskTitle: task.title,
+                          taskDescription: task.description,
+                          date: dateOnly,
+                          onDelete: () async {
+                            setState(() => getTaskByStatusController.taskList.removeAt(index));
+                          },
+                          onUpdateRefreshScreen: () async {
+                            await getTask();
+                            setState(() {});
+                          },
+                        );
                       },
-                      onUpdateRefreshScreen: () async {
-                        await getTask();
-                        setState(() {});
-                      },
-                    );
-                  },
-                ),
+                    ),
+          );
+        }
       ),
     );
   }
 
   Future<void> getTask() async {
-    setState(() => isLoading = true);
-    taskList = await getTaskListByStatus(status: 'Completed');
-    setState(() => isLoading = false);
+    try {
+       await getTaskByStatusController.getTaskListByStatus(
+        status: 'Completed',
+      );
+    } catch (e) {
+      Logger().i(e);
+      //the error will be autometic handeled from netwrok Client
+    }
   }
 }

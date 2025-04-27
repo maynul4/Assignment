@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:task_manager_task/data/model/task_details_model.dart';
-import 'package:task_manager_task/data/model/task_status_count_list_model.dart';
-import 'package:task_manager_task/data/model/task_status_count_model.dart';
-import 'package:task_manager_task/data/service/network_client.dart';
-import 'package:task_manager_task/data/utils/urls.dart';
+import 'package:get/get.dart';
+import 'package:logger/logger.dart';
+import 'package:task_manager_task/ui/controller/get_task_by_status_controller.dart';
+import 'package:task_manager_task/ui/controller/task_count_by_status_controller.dart';
 import 'package:task_manager_task/ui/widgets/pop_up_message.dart';
-import '../widgets/get_task_list_by_status.dart';
 import '../widgets/summary_card.dart';
 import '../widgets/task_card.dart';
 
@@ -24,10 +22,13 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
     super.initState();
   }
 
-  List<TaskStatusCountModel> _taskStatusCount = [];
 
-  bool isLoading = false;
-  List<TaskDetailsModel> taskList = [] ;
+  GetTaskByStatusController getTaskByStatusController =
+  Get.find<GetTaskByStatusController>();
+
+  TaskCountByStatusController taskCountByStatusController = Get.find<TaskCountByStatusController>();
+
+
 
   Future<void> _refreshTask() async {
     await getTask();
@@ -44,77 +45,93 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
         child: Icon(Icons.add),
       ),
       body:
-          isLoading
+      GetBuilder<GetTaskByStatusController>(
+        builder: (controller) {
+          return getTaskByStatusController.isLoading
               ? Center(child: const CircularProgressIndicator())
               : RefreshIndicator(
-                onRefresh: _refreshTask,
-                child: ListView(
-                  children: [
-                    Column(
-                      children: [
-                        const SizedBox(height: 5),
-                        buildSummarySection(),
+            onRefresh: _refreshTask,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  const SizedBox(height: 5),
+                  GetBuilder<TaskCountByStatusController>(
+                    builder: (controller) {
+                      return buildSummarySection();
+                    }
+                  ),
 
-                        taskList.isEmpty
-                            ? Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                  getTaskByStatusController.taskList.isEmpty
+                      ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
 
-                              children: [
-                                SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height / 3,
-                                ),
-                                Center(child: Text('Empty')),
-                              ],
-                            )
-                            : ListView.separated(
-                              primary: false,
-                              shrinkWrap: true,
-                              itemCount: taskList.length,
-                              separatorBuilder:
-                                  (context, index) => SizedBox(height: 10),
-                              itemBuilder: (BuildContext context, int index) {
-                                var task = taskList[index];
-                                String dateTime = task.createdDate;
-                                String dateOnly = dateTime.split('T')[0];
-                                return TaskCard(
-                                  id: task.id,
-                                  status: 'New',
-                                  taskTitle: task.title,
-                                  taskDescription: task.description,
-                                  date: dateOnly,
-                                  onDelete: () async {
-                                    taskList.removeAt(index);
-                                    await getAllTaskStatusCount(); // Update summary
-                                    setState(() {});
-                                  },
-                                  onUpdateRefreshScreen: () async {
-                                    await getTask();
-                                    setState(() {});
-                                  },
-                                );
-                              },
-                            ),
-                      ],
-                    ),
-                  ],
-                ),
+                    children: [
+                      SizedBox(
+                        height:
+                        MediaQuery
+                            .of(context)
+                            .size
+                            .height / 3,
+                      ),
+                      Center(child: Text('Empty')),
+                    ],
+                  )
+                      : ListView.separated(
+                    primary: false,
+                    shrinkWrap: true,
+                    itemCount:
+                    getTaskByStatusController.taskList.length,
+                    separatorBuilder:
+                        (context, index) => SizedBox(height: 10),
+                    itemBuilder: (BuildContext context, int index) {
+                      var task =
+                      getTaskByStatusController.taskList[index];
+                      String dateTime = task.createdDate;
+                      String dateOnly = dateTime.split('T')[0];
+                      return TaskCard(
+                        id: task.id,
+                        status: 'New',
+                        taskTitle: task.title,
+                        taskDescription: task.description,
+                        date: dateOnly,
+                        onDelete: () async {
+                          getTaskByStatusController.taskList
+                              .removeAt(index);
+                          await getAllTaskStatusCount(); // Update summary
+                          setState(() {});
+                        },
+                        onUpdateRefreshScreen: () async {
+                          await getTask();
+                          setState(() {});
+                        },
+                      );
+                    },
+                  ),
+                ],
               ),
+            ),
+          );
+        }
+      ),
     );
   }
 
   Widget buildSummarySection() {
     return SizedBox(
       height: 100,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: _taskStatusCount.length,
-        itemBuilder: (context, index) {
-          return SummaryCard(
-            title: _taskStatusCount[index].status,
-            count: _taskStatusCount[index].count,
+      child: Builder(
+        builder: (context) {
+          return ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: taskCountByStatusController.taskStatusCountList.length,
+            itemBuilder: (context, index) {
+              return SummaryCard(
+                title: taskCountByStatusController.taskStatusCountList[index].status,
+                count: taskCountByStatusController.taskStatusCountList[index].count,
+              );
+            },
           );
-        },
+        }
       ),
     );
   }
@@ -132,33 +149,18 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
   }
 
   Future<void> getAllTaskStatusCount() async {
-    isLoading = true;
-    setState(() {});
-    final NetworkResponse response = await NetworkClient.getRequest(
-      url: Urls.taskStatusCountUrl,
-    );
-
-    if (response.statusCode == 200) {
-      TaskStatusCountListModel taskStatusListModel =
-          TaskStatusCountListModel.fromJson(response.data ?? {});
-      _taskStatusCount = taskStatusListModel.statusCountList;
-    } else {
-      if (!mounted) return;
-      showPopUp(context, response.errorMessage);
-    }
-    isLoading = false;
-    setState(() {});
+      try{
+        await taskCountByStatusController.getAllTaskStatusCount();
+      }catch(e){
+        showPopUp(context,'Something went wrong', true);
+      }
   }
 
-  Future<void> getTask() async {
-    isLoading = true;
-    setState(() {});
+  Future getTask() async {
     try {
-      taskList = await getTaskListByStatus(status: 'New');
+      await getTaskByStatusController.getTaskListByStatus(status: 'New');
     } catch (e) {
-      print(e);
+      Logger().i('Failed to get Task from controller');
     }
-    isLoading = false;
-    setState(() {});
   }
 }

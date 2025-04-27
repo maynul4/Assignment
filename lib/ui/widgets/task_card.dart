@@ -224,7 +224,7 @@ class TaskCard extends StatelessWidget {
     } else {
       return false;
     }
-    ;
+
   }
 
   Future<void> updateTaskStatus(id, status) async {

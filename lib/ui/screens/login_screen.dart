@@ -1,10 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:task_manager_task/data/model/login_model.dart';
-import 'package:task_manager_task/ui/controller/auth_controller.dart';
-import '../../data/service/network_client.dart';
-import '../../data/utils/urls.dart';
-
+import 'package:get/get.dart';
+import 'package:task_manager_task/ui/controller/login_controller.dart';
 import '../widgets/screen_background.dart';
 import '../widgets/validator.dart';
 
@@ -20,9 +17,10 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _passwordTEController = TextEditingController();
   final GlobalKey<FormState> _globalKey = GlobalKey<FormState>();
 
-  bool isIncorrectPassword = false;
   bool visiblePassword = false;
-  bool isLoading = false;
+
+
+  LoginController loginController = Get.find<LoginController>();
 
   @override
   Widget build(BuildContext context) {
@@ -48,12 +46,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     textInputAction: TextInputAction.next,
                     decoration: InputDecoration(
                       hintText: 'Email',
-                      border:
-                          isIncorrectPassword == true
-                              ? OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.red),
-                              )
-                              : OutlineInputBorder(borderSide: BorderSide.none),
                     ),
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: (String? value) {
@@ -82,12 +74,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                 : Icon(Icons.visibility),
                       ),
                       hintText: 'Password',
-                      border:
-                          isIncorrectPassword == true
-                              ? OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.red),
-                              )
-                              : OutlineInputBorder(borderSide: BorderSide.none),
                     ),
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: (String? value) {
@@ -98,17 +84,17 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                   ),
                   SizedBox(height: 16),
-                  Visibility(
-                    visible: isLoading == false,
-                    replacement: Center(child: CircularProgressIndicator()),
-                    child: ElevatedButton(
-                      onPressed: _onTapSignInButton,
-                      child: Visibility(
-                        visible: isLoading == false,
+                  GetBuilder<LoginController>(
+                    builder: (controller) {
+                      return Visibility(
+                        visible: loginController.isLoading == false,
                         replacement: Center(child: CircularProgressIndicator()),
-                        child: Icon(Icons.arrow_circle_right_outlined),
-                      ),
-                    ),
+                        child: ElevatedButton(
+                          onPressed: _onTapSignInButton,
+                          child: Icon(Icons.arrow_circle_right_outlined),
+                        ),
+                      );
+                    }
                   ),
 
                   SizedBox(height: 20),
@@ -155,38 +141,17 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _logIn() async {
-    Map<String, dynamic> body = {
-      "email": _emailTEController.text.trim(),
-      "password": _passwordTEController.text,
-    };
-
-    isLoading = true;
-    setState(() {});
-
-    final NetworkResponse response = await NetworkClient.postRequest(
-      url: Urls.logInrUrl,
-      body: body,
-    );
-    if (response.statusCode == 200) {
-      isLoading = true;
-      isIncorrectPassword = false;
-      LoginModel loginModel = LoginModel.fromJson(response.data!);
-      AuthController.saveUserInformation(
-        loginModel.token,
-        loginModel.userModel,
-      );
+    final bool isSuccess = await loginController.logIn(email: _emailTEController.text.trim(), password: _passwordTEController.text);
+    if (isSuccess) {
+      if(!mounted)return;
       Navigator.pushNamedAndRemoveUntil(
         context,
         '/MainBottomNavScreen',
         (routes) => false,
       );
-      isLoading = false;
     } else {
-      isIncorrectPassword = true;
-      setState(() {});
+      //faildLogin will manged from networkClient
     }
-    isLoading = false;
-    setState(() {});
   }
 
   _onTapSignUpButton() {
