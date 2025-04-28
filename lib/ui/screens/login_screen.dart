@@ -18,7 +18,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailTEController = TextEditingController();
   final TextEditingController _passwordTEController = TextEditingController();
-  final GlobalKey<FormState> _globalKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   bool isIncorrectPassword = false;
   bool visiblePassword = false;
@@ -32,7 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
           padding: const EdgeInsets.all(24),
           child: SingleChildScrollView(
             child: Form(
-              key: _globalKey,
+              key: _formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -151,7 +151,10 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   _onTapSignInButton() {
-    _logIn();
+    if(_formKey.currentState
+    !.validate()){
+      _logIn();
+    }
   }
 
   Future<void> _logIn() async {
