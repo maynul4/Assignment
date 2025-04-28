@@ -7,6 +7,7 @@ import 'package:task_manager_task/data/model/user_model.dart';
 import 'package:task_manager_task/data/service/network_client.dart';
 import 'package:task_manager_task/data/utils/urls.dart';
 import 'package:task_manager_task/ui/controller/auth_controller.dart';
+import '../widgets/pop_up_message.dart';
 import '../widgets/screen_background.dart';
 import '../widgets/tm_app_bar.dart';
 
@@ -26,6 +27,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   final TextEditingController _passwordTEController = TextEditingController();
 
   bool passwordVisibility = true;
+  bool isLoading = false;
 
   _passwordVisibilityStateControl() {
     setState(() {
@@ -46,6 +48,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   }
 
   VoidCallback? onUpdate;
+  VoidCallback? loadingWhenLogOut;
 
   @override
   void didChangeDependencies() {
@@ -123,7 +126,11 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
                   ElevatedButton(
                     onPressed: _onTapSubmit,
-                    child: const Icon(Icons.arrow_circle_right_outlined),
+                    child: Visibility(
+                      visible: isLoading == false,
+                      replacement: CircularProgressIndicator(),
+                      child: Icon(Icons.arrow_circle_right_outlined),
+                    ),
                   ),
                 ],
               ),
@@ -174,9 +181,21 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     );
   }
 
-  _onTapSubmit() {
-    updateProfile();
-    _passwordTEController.clear();
+  _onTapSubmit() async {
+    bool isUserMadeAnyChange =
+        pickedImage != null ||
+        AuthController.userInfoModel?.firstName !=
+            _firstNameTEController.text.trim() ||
+        AuthController.userInfoModel?.lastName !=
+            _lastNameTEController.text.trim() ||
+        AuthController.userInfoModel?.mobile != _mobileTEController.text.trim();
+    bool isPasswordChange = _passwordTEController.text.trim().isNotEmpty;
+    if (isUserMadeAnyChange || isPasswordChange) {
+      await updateProfile();
+      _passwordTEController.clear();
+    } else {
+      showPopUp(context, 'You did not make any changes to update.', true);
+    }
   }
 
   _onTapPhotoPicker() {
@@ -188,6 +207,8 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   final Logger _logger = Logger();
 
   Future<void> updateProfile() async {
+    isLoading = true;
+    setState(() {});
     Map<String, dynamic> requestBody = {
       "email": _emailTEController.text.trim(),
       "firstName": _firstNameTEController.text.trim(),
@@ -212,6 +233,8 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     } else {
       _logger.e(response.errorMessage);
     }
+    isLoading = false;
+    setState(() {});
   }
 
   Future<void> getProfileDetails() async {

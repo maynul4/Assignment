@@ -8,7 +8,8 @@ class TMAppBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback? onUpdate;
   final bool? fromProfileScreen;
 
-  const TMAppBar({super.key, this.fromProfileScreen, this.onUpdate});
+
+  const TMAppBar({super.key, this.fromProfileScreen, this.onUpdate,});
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +57,7 @@ class TMAppBar extends StatelessWidget implements PreferredSizeWidget {
               ),
             ),
 
+            fromProfileScreen != null ? Text(''):
             IconButton(
               onPressed: () {
                 _onTapLogOut(context);
