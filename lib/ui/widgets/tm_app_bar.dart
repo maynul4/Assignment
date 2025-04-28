@@ -1,14 +1,14 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:get/get_state_manager/src/simple/get_state.dart';
 import 'package:logger/logger.dart';
 import 'package:task_manager_task/ui/controller/auth_controller.dart';
+import 'package:task_manager_task/ui/controller/update_profile_controller.dart';
 
 class TMAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final VoidCallback? onUpdate;
   final bool? fromProfileScreen;
-
-  const TMAppBar({super.key, this.fromProfileScreen, this.onUpdate});
+  const TMAppBar({super.key, this.fromProfileScreen,});
 
   @override
   Widget build(BuildContext context) {
@@ -18,51 +18,56 @@ class TMAppBar extends StatelessWidget implements PreferredSizeWidget {
       title: GestureDetector(
         onTap: () {
           if (fromProfileScreen ?? false) {
-            // that means profile screen not true
+            // that means this is not update profile screen not true
             return;
           }
           _onTapProfileUpdate(context);
         },
 
-        child: Row(
-          children: [
-            CircleAvatar(
-              radius: 16,
-              backgroundImage:
-                  shouldShowImage(AuthController.userInfoModel?.photo)
-                      ? MemoryImage(
-                        base64Decode(AuthController.userInfoModel?.photo ?? ''),
-                      )
-                      : null,
-            ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    fullName(
-                      firstName: AuthController.userInfoModel!.firstName,
-                      lastName: AuthController.userInfoModel!.lastName,
-                    ),
-                    style: theme.bodyLarge?.copyWith(color: Colors.white),
-                  ),
-                  Text(
-                    AuthController.userInfoModel!.email,
-                    style: theme.bodySmall?.copyWith(color: Colors.white),
-                  ),
-                ],
-              ),
-            ),
+        child: GetBuilder<UpdateProfileController>(
+          builder: (controller) {
 
-            IconButton(
-              onPressed: () {
-                _onTapLogOut(context);
-              },
-              icon: Icon(Icons.logout),
-            ),
-          ],
+            return Row(
+              children: [
+                CircleAvatar(
+                  radius: 16,
+                  backgroundImage:
+                      shouldShowImage(AuthController.userInfoModel?.photo)
+                          ? MemoryImage(
+                            base64Decode(AuthController.userInfoModel?.photo ?? ''),
+                          )
+                          : null,
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        fullName(
+                          firstName: AuthController.userInfoModel?.firstName??'' ,
+                          lastName: AuthController.userInfoModel?.lastName?? '',
+                        ),
+                        style: theme.bodyLarge?.copyWith(color: Colors.white),
+                      ),
+                      Text(
+                        AuthController.userInfoModel!.email,
+                        style: theme.bodySmall?.copyWith(color: Colors.white),
+                      ),
+                    ],
+                  ),
+                ),
+
+                IconButton(
+                  onPressed: () {
+                    _onTapLogOut(context);
+                  },
+                  icon: Icon(Icons.logout),
+                ),
+              ],
+            );
+          }
         ),
       ),
     );
@@ -80,11 +85,6 @@ class TMAppBar extends StatelessWidget implements PreferredSizeWidget {
     Navigator.pushNamed(
       context,
       '/UpdateProfileScreen',
-      arguments: () {
-        // AuthController.getUserInformation();
-        onUpdate!();
-        Logger().w('Got the notifier from TMAPP Bar');
-      },
     );
   }
 

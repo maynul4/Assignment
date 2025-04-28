@@ -2,13 +2,15 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:logger/logger.dart';
-import 'package:task_manager_task/data/model/profile_details_model.dart';
 import 'package:task_manager_task/data/model/user_model.dart';
 import 'package:task_manager_task/data/service/network_client.dart';
 import 'package:task_manager_task/data/utils/urls.dart';
 import 'package:task_manager_task/ui/controller/auth_controller.dart';
+import 'package:task_manager_task/ui/controller/update_profile_controller.dart';
+import 'package:task_manager_task/ui/widgets/pop_up_message.dart';
 import '../widgets/screen_background.dart';
 import '../widgets/tm_app_bar.dart';
+import 'package:get/get.dart';
 
 class UpdateProfileScreen extends StatefulWidget {
   const UpdateProfileScreen({super.key});
@@ -35,6 +37,9 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
   XFile? pickedImage;
 
+
+  UpdateProfileController updateProfileController = Get.find<UpdateProfileController>();
+
   @override
   void initState() {
     UserModel userModel = AuthController.userInfoModel!;
@@ -43,15 +48,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     _lastNameTEController.text = userModel.lastName;
     _mobileTEController.text = userModel.mobile;
     super.initState();
-  }
-
-  VoidCallback? onUpdate;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final args = ModalRoute.of(context)!.settings.arguments as VoidCallback;
-    onUpdate = args;
   }
 
   @override
@@ -121,9 +117,19 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                   ),
                   SizedBox(height: 10),
 
-                  ElevatedButton(
-                    onPressed: _onTapSubmit,
-                    child: const Icon(Icons.arrow_circle_right_outlined),
+                  Visibility(
+
+                    child: ElevatedButton(
+                      onPressed: _onTapSubmit,
+                      child: GetBuilder<UpdateProfileController>(
+                        builder: (context) {
+                          return Visibility(
+                            visible: updateProfileController.isLoading == false,
+                              replacement: CircularProgressIndicator(),
+                              child: Icon(Icons.arrow_circle_right_outlined));
+                        }
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -174,10 +180,22 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     );
   }
 
-  _onTapSubmit() {
-    updateProfile();
-    _passwordTEController.clear();
+  _onTapSubmit() async {
+    bool isUserMadeAnyChange = pickedImage != null ||
+    AuthController.userInfoModel?.firstName != _firstNameTEController.text.trim() ||
+    AuthController.userInfoModel?.lastName != _lastNameTEController.text.trim() ||
+    AuthController.userInfoModel?.mobile != _mobileTEController.text.trim();
+    bool isPasswordChange = _passwordTEController.text.trim().isNotEmpty;
+    if(isUserMadeAnyChange || isPasswordChange ) {
+      await updateProfile();
+      _passwordTEController.clear();
+    }else{
+      showPopUp(context, 'You did not make any changes to update.', true);
+    }
   }
+
+
+
 
   _onTapPhotoPicker() {
     // imagePicker();
@@ -208,53 +226,13 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     );
     if (response.statusCode == 200) {
       getProfileDetails();
-      setState(() {});
     } else {
       _logger.e(response.errorMessage);
     }
   }
 
   Future<void> getProfileDetails() async {
-    NetworkResponse response = await NetworkClient.getRequest(
-      url: Urls.profileDetailsUrl,
-    );
-    if (response.statusCode == 200) {
-      String token = AuthController.token!;
-
-      Map<String, dynamic> userDetailsMap = response.data!['data'][0];
-      _logger.w(userDetailsMap);
-      UpdateProfileModel updateProfileModel = UpdateProfileModel.fromJson(
-        response.data!,
-      );
-
-      Map<String, dynamic> prepareJsonDataForInitiatingUserModel = {
-        "_id": updateProfileModel.data.id,
-        "email": updateProfileModel.data.email,
-        "firstName": updateProfileModel.data.firstName,
-        "lastName": updateProfileModel.data.lastName,
-        "mobile": updateProfileModel.data.mobile,
-        "createdDate": updateProfileModel.data.createdDate,
-        "photo": updateProfileModel.data.photo,
-      };
-      UserModel userModel = UserModel.convertJsonToDart(
-        prepareJsonDataForInitiatingUserModel,
-      );
-
-      await AuthController.saveUserInformation(token, userModel);
-      await AuthController.getUserInformation();
-      if (AuthController.token != null) {
-        _logger.i('State update Successfully ${AuthController.userInfoModel}');
-        setState(() {});
-        if (onUpdate != null) {
-          _logger.w('Got the notifier from update screen');
-          onUpdate!();
-        } else {
-          _logger.e('Failed to got the notifier form profile update screen');
-        }
-      } else {
-        _logger.e('Fail to update the state');
-      }
-    }
+    await updateProfileController.getProfileDetails();
   }
 
   Future<void> imagePicker() async {

@@ -9,8 +9,6 @@ import 'new_task_screen.dart';
 class MainBottomNavScreen extends StatefulWidget {
   const MainBottomNavScreen({super.key});
 
-
-
   @override
   State<MainBottomNavScreen> createState() => _MainBottomNavScreenState();
 }
@@ -32,12 +30,7 @@ class _MainBottomNavScreenState extends State<MainBottomNavScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: TMAppBar(
-        onUpdate: () {
-          setState(() {});
-          Logger().w('Got the notifier from mainBottom ');
-        },
-      ),
+      appBar: TMAppBar(),
       body: _screens[selectedIndex],
       bottomNavigationBar: NavigationBar(
         selectedIndex: selectedIndex,
