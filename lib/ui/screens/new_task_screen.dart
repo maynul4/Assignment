@@ -89,17 +89,12 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
                       String dateTime = task.createdDate;
                       String dateOnly = dateTime.split('T')[0];
                       return TaskCard(
+                        index: index,
                         id: task.id,
                         status: 'New',
                         taskTitle: task.title,
                         taskDescription: task.description,
                         date: dateOnly,
-                        onDelete: () async {
-                          getTaskByStatusController.taskList
-                              .removeAt(index);
-                          await getAllTaskStatusCount(); // Update summary
-                          setState(() {});
-                        },
                         onUpdateRefreshScreen: () async {
                           await getTask();
                           setState(() {});

@@ -2,8 +2,9 @@ import 'dart:convert';
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:task_manager_task/data/model/user_model.dart';
+import 'package:get/get.dart';
 
-class AuthController {
+class AuthController extends GetxController {
   static String? token;
   static UserModel? userInfoModel;
   static Logger _logger = Logger();
@@ -26,6 +27,7 @@ class AuthController {
     userInfoModel = userModel;
 
     _logger.i("This Is Save Data: $userInfoModel");
+    Get.find<AuthController>().update();
   }
 
   static Future<void> getUserInformation() async {
@@ -45,6 +47,7 @@ class AuthController {
     if (userInfoModel?.firstName != null) {
       _logger.w('User Got the data successfully');
     }
+    Get.find<AuthController>().update();
   }
 
   static Future<bool> checkIfUserLoggedIn() async {
@@ -55,14 +58,14 @@ class AuthController {
       return true;
     }
     return false;
-  }
 
+  }
   static Future<void> clearUserData() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     sharedPreferences.clear();
     token = null;
     userInfoModel = null;
-
+    Get.find<AuthController>().update();
     _logger.i('Token: ==> $token & cleared');
     _logger.i('Token: ==> $userInfoModel & cleared');
   }

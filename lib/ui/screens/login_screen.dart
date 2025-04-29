@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:task_manager_task/ui/controller/auth_controller.dart';
 import 'package:task_manager_task/ui/controller/login_controller.dart';
 import '../widgets/screen_background.dart';
 import '../widgets/validator.dart';
@@ -142,7 +143,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _logIn() async {
     final bool isSuccess = await loginController.logIn(email: _emailTEController.text.trim(), password: _passwordTEController.text);
-    if (isSuccess) {
+    if (isSuccess && AuthController.userInfoModel != null) {
       if(!mounted)return;
       Navigator.pushNamedAndRemoveUntil(
         context,
@@ -150,7 +151,7 @@ class _LoginScreenState extends State<LoginScreen> {
         (routes) => false,
       );
     } else {
-      //faildLogin will manged from networkClient
+      //failed Login will manged from networkClient
     }
   }
 

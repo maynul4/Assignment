@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:task_manager_task/app.dart';
 import 'package:task_manager_task/data/service/network_client.dart';
 import 'package:task_manager_task/data/utils/urls.dart';
+import 'package:task_manager_task/ui/controller/delete_task_controller.dart';
 import 'package:task_manager_task/ui/widgets/pop_up_message.dart';
+import 'package:get/get.dart';
 
 class TaskCard extends StatelessWidget {
-  const TaskCard({
+   TaskCard({
     super.key,
     required this.status,
+    this.index,
     this.taskTitle,
     this.taskDescription,
     this.date,
@@ -17,12 +20,15 @@ class TaskCard extends StatelessWidget {
   });
 
   final String status;
+  final int? index;
   final String? taskTitle;
   final String? taskDescription;
   final String? date;
   final String id;
   final VoidCallback? onDelete;
   final VoidCallback? onUpdateRefreshScreen;
+
+  final DeleteTaskController deleteTaskController = Get.find<DeleteTaskController>();
 
   @override
   Widget build(BuildContext context) {
@@ -203,19 +209,7 @@ class TaskCard extends StatelessWidget {
   }
 
   Future<void> deleteTask(id) async {
-    String url = Urls.deleteTaskUrl(id);
-    NetworkResponse response = await NetworkClient.getRequest(url: url);
-    if (response.statusCode == 200) {
-      if (onDelete != null) {
-        onDelete!();
-      }
-      showPopUp(TaskManager.navigatorKey.currentContext, '$taskTitle deleted');
-    } else {
-      showPopUp(
-        TaskManager.navigatorKey.currentContext,
-        'Something went wrong',
-      );
-    }
+    await deleteTaskController.deleteTask(id: id, index: index!, taskTitle: taskTitle!);
   }
 
   bool isCurrentStatus(String currentStatus) {

@@ -1,14 +1,13 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/simple/get_state.dart';
-import 'package:logger/logger.dart';
 import 'package:task_manager_task/ui/controller/auth_controller.dart';
-import 'package:task_manager_task/ui/controller/update_profile_controller.dart';
-
+import 'package:get/get.dart';
 class TMAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final bool? fromProfileScreen;
-  const TMAppBar({super.key, this.fromProfileScreen,});
+  final bool? fromUpdateProfileScreen;
+   TMAppBar({super.key, this.fromUpdateProfileScreen,});
+
+   final AuthController authController = Get.find<AuthController>();
 
   @override
   Widget build(BuildContext context) {
@@ -17,16 +16,14 @@ class TMAppBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: Colors.green,
       title: GestureDetector(
         onTap: () {
-          if (fromProfileScreen ?? false) {
+          if (fromUpdateProfileScreen ?? false) {
             // that means this is not update profile screen not true
             return;
           }
           _onTapProfileUpdate(context);
         },
-
-        child: GetBuilder<UpdateProfileController>(
+        child: GetBuilder<AuthController>(
           builder: (controller) {
-
             return Row(
               children: [
                 CircleAvatar(
@@ -52,7 +49,7 @@ class TMAppBar extends StatelessWidget implements PreferredSizeWidget {
                         style: theme.bodyLarge?.copyWith(color: Colors.white),
                       ),
                       Text(
-                        AuthController.userInfoModel!.email,
+                        AuthController.userInfoModel?.email?? '',
                         style: theme.bodySmall?.copyWith(color: Colors.white),
                       ),
                     ],
@@ -67,6 +64,7 @@ class TMAppBar extends StatelessWidget implements PreferredSizeWidget {
                 ),
               ],
             );
+
           }
         ),
       ),
