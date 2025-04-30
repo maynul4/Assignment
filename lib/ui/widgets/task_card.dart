@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:task_manager_task/app.dart';
-import 'package:task_manager_task/data/service/network_client.dart';
-import 'package:task_manager_task/data/utils/urls.dart';
 import 'package:task_manager_task/ui/controller/delete_task_controller.dart';
-import 'package:task_manager_task/ui/widgets/pop_up_message.dart';
+import 'package:task_manager_task/ui/controller/updateTaskController.dart';
 import 'package:get/get.dart';
 
 class TaskCard extends StatelessWidget {
@@ -15,8 +12,7 @@ class TaskCard extends StatelessWidget {
     this.taskDescription,
     this.date,
     required this.id,
-    this.onDelete,
-    this.onUpdateRefreshScreen,
+
   });
 
   final String status;
@@ -25,10 +21,10 @@ class TaskCard extends StatelessWidget {
   final String? taskDescription;
   final String? date;
   final String id;
-  final VoidCallback? onDelete;
-  final VoidCallback? onUpdateRefreshScreen;
+
 
   final DeleteTaskController deleteTaskController = Get.find<DeleteTaskController>();
+  final UpdateTaskController updateTaskController = Get.find<UpdateTaskController>();
 
   @override
   Widget build(BuildContext context) {
@@ -125,7 +121,7 @@ class TaskCard extends StatelessWidget {
                       Navigator.pop(context);
                       return;
                     } else {
-                      updateTaskStatus(id, 'New');
+                      updateTaskStatus(id, 'New',status);
                       Navigator.pop(context);
                     }
                   },
@@ -146,7 +142,7 @@ class TaskCard extends StatelessWidget {
                       Navigator.pop(context);
                       return;
                     } else {
-                      updateTaskStatus(id, 'Completed');
+                      updateTaskStatus(id, 'Completed', status);
                       Navigator.pop(context);
                     }
                   },
@@ -167,7 +163,7 @@ class TaskCard extends StatelessWidget {
                       Navigator.pop(context);
                       return;
                     } else {
-                      updateTaskStatus(id, 'Canceled');
+                      updateTaskStatus(id, 'Canceled',status);
                       Navigator.pop(context);
                     }
                   },
@@ -188,7 +184,7 @@ class TaskCard extends StatelessWidget {
                       Navigator.pop(context);
                       return;
                     } else {
-                      updateTaskStatus(id, 'Progress');
+                      updateTaskStatus(id, 'Progress',status );
                       Navigator.pop(context);
                     }
                   },
@@ -221,16 +217,7 @@ class TaskCard extends StatelessWidget {
 
   }
 
-  Future<void> updateTaskStatus(id, status) async {
-    String Url = Urls.updateTaskStatusUrl(taskId: id, status: status);
-    NetworkResponse response = await NetworkClient.getRequest(url: Url);
-    if (response.statusCode == 200) {
-      if (onUpdateRefreshScreen != null) {
-        onUpdateRefreshScreen!();
-      }
-      showPopUp(TaskManager.navigatorKey.currentContext, 'Update Successful');
-    } else {
-      showPopUp(TaskManager.navigatorKey.currentContext, 'Update faild');
-    }
+  Future<void> updateTaskStatus(id, status, currentStatus) async {
+    await updateTaskController.updateTaskStatus(id: id, status: status, currentStatus: currentStatus );
   }
 }

@@ -61,18 +61,12 @@ class _InProgressTaskScreenState extends State<InProgressTaskScreen> {
                         var task = getTaskByStatusController.taskList[index];
                         String dateOnly = task.createdDate.split('T')[0];
                         return TaskCard(
+                          index: index,
                           id: task.id,
                           status: 'Progress',
                           taskTitle: task.title,
                           taskDescription: task.description,
                           date: dateOnly,
-                          onDelete: () async {
-                            setState(() => getTaskByStatusController.taskList.removeAt(index));
-                          },
-                          onUpdateRefreshScreen: () async {
-                            await getTask();
-                            setState(() {});
-                          },
                         );
                       },
                     ),

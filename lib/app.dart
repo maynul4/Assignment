@@ -6,7 +6,7 @@ import 'package:task_manager_task/ui/screens/forget_password_email_verify_screen
 import 'package:task_manager_task/ui/screens/forget_password_otp_verification_screen.dart';
 import 'package:task_manager_task/ui/screens/login_screen.dart';
 import 'package:task_manager_task/ui/screens/main_bottom_nav_screen.dart';
-import 'package:task_manager_task/ui/screens/register_screen.dart';
+import 'package:task_manager_task/ui/screens/signup_screen.dart';
 import 'package:task_manager_task/ui/screens/reset_password_screen.dart';
 import 'package:task_manager_task/ui/screens/splash_screen.dart';
 import 'package:task_manager_task/ui/screens/update_profile_screen.dart';
@@ -27,7 +27,7 @@ class TaskManager extends StatelessWidget {
       routes: {
         '/splash': (context) => SplashScreen(),
         '/login': (context) => LoginScreen(),
-        '/register': (context) => RegisterScreen(),
+        '/register': (context) => SignupScreen(),
         '/resetPassword': (context) => ResetPasswordScreen(),
         '/forgetPasswordEmail': (context) => ForgetPasswordEmailVerifyScreen(),
         '/forgetPasswordPin':

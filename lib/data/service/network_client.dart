@@ -170,6 +170,7 @@ class NetworkClient {
       '/login',
       (route) => false,
     );
+    showPopUp(TaskManager.navigatorKey.currentContext, 'Login Expired');
   }
 }
 

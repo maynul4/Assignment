@@ -1,19 +1,21 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_state_manager/src/simple/get_state.dart';
+import 'package:task_manager_task/ui/controller/signup_controller.dart';
 import '../../data/service/network_client.dart';
 import '../../data/utils/urls.dart';
 import '../widgets/pop_up_message.dart';
 import '../widgets/screen_background.dart';
 import '../widgets/validator.dart';
 
-class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({super.key});
+class SignupScreen extends StatefulWidget {
+  const SignupScreen({super.key});
 
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
+  State<SignupScreen> createState() => _SignupScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
+class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController _emailTEContrller = TextEditingController();
   final TextEditingController _firstNameTEContrller = TextEditingController();
   final TextEditingController _lastNameTEContrller = TextEditingController();
@@ -24,7 +26,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   bool passwordVisibility = true;
 
-  static bool _isRegisterLoading = false;
+  SignupController signupController = SignupController();
+
 
   _passwordVisibilityStateControl() {
     setState(() {
@@ -140,15 +143,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                   ElevatedButton(
                     onPressed: _onTapSubmit,
-                    child: Visibility(
-                      visible: _isRegisterLoading == false,
-                      replacement: Center(
-                        child: Padding(
-                          padding: EdgeInsets.all(2),
-                          child: CircularProgressIndicator(),
-                        ),
-                      ),
-                      child: const Icon(Icons.arrow_circle_right_outlined),
+                    child: GetBuilder<SignupController>(
+                      builder: (context) {
+                        return Visibility(
+                          visible: signupController.isLoading == false,
+                          replacement: Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(2),
+                              child: CircularProgressIndicator(),
+                            ),
+                          ),
+                          child: const Icon(Icons.arrow_circle_right_outlined),
+                        );
+                      }
                     ),
                   ),
 
@@ -190,28 +197,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Future<void> register() async {
-    _isRegisterLoading = true;
-    setState(() {});
-    Map<String, dynamic> body = {
+    Map<String, dynamic> requestBody = {
       "email": _emailTEContrller.text.trim(),
       "firstName": _firstNameTEContrller.text.trim(),
       "lastName": _lastNameTEContrller.text.trim(),
       "mobile": _mobileTEContrller.text.trim(),
       "password": _passwordlTEContrller.text,
     };
-    NetworkResponse response = await NetworkClient.postRequest(
-      url: Urls.registerUrl,
-      body: body,
-    );
-    if (response.statusCode == 200) {
+    bool isSuccess = await signupController.signup(requestBody: requestBody);
+    if(isSuccess){
       _clearAllTextField();
-      if (!mounted) return;
-      showPopUp(context, 'Registration Successfully');
-    } else {
-      print('Registration fail due to invalid mail');
+    }else{
+      return;
     }
-    _isRegisterLoading = false;
-    setState(() {});
+
   }
 
   _onTapSignInButton() {

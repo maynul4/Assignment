@@ -12,6 +12,22 @@ class UpdateProfileController extends GetxController{
   get isLoading => _isLoading;
   Logger _logger = Logger();
 
+  Future<void> updateProfile({
+    required Map<String,dynamic>?requestBody,
+
+  }) async {
+
+    NetworkResponse response = await NetworkClient.postRequest(
+      url: Urls.updateProfileUrl,
+      body: requestBody,
+    );
+    if (response.statusCode == 200) {
+     await getProfileDetails();
+    } else {
+      _logger.e(response.errorMessage);
+    }
+  }
+
   Future<void> getProfileDetails() async {
     _isLoading = true;
     update();

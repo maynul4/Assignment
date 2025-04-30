@@ -1,10 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:logger/logger.dart';
 import 'package:task_manager_task/data/model/user_model.dart';
-import 'package:task_manager_task/data/service/network_client.dart';
-import 'package:task_manager_task/data/utils/urls.dart';
 import 'package:task_manager_task/ui/controller/auth_controller.dart';
 import 'package:task_manager_task/ui/controller/update_profile_controller.dart';
 import 'package:task_manager_task/ui/widgets/pop_up_message.dart';
@@ -203,7 +200,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   }
 
   bool isCamera = true;
-  final Logger _logger = Logger();
+
 
   Future<void> updateProfile() async {
     Map<String, dynamic> requestBody = {
@@ -220,20 +217,10 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
       String encodedImage = base64Encode(imageByte);
       requestBody['photo'] = encodedImage;
     }
-    NetworkResponse response = await NetworkClient.postRequest(
-      url: Urls.updateProfileUrl,
-      body: requestBody,
-    );
-    if (response.statusCode == 200) {
-      getProfileDetails();
-    } else {
-      _logger.e(response.errorMessage);
-    }
+    await updateProfileController.updateProfile(requestBody: requestBody);
   }
 
-  Future<void> getProfileDetails() async {
-    await updateProfileController.getProfileDetails();
-  }
+
 
   Future<void> imagePicker() async {
     final picker = ImagePicker();

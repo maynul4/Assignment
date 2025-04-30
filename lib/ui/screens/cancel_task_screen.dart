@@ -59,19 +59,12 @@ class _CancelTaskScreenState extends State<CancelTaskScreen> {
                         var task = getTaskByStatusController.taskList[index];
                         String dateOnly = task.createdDate.split('T')[0];
                         return TaskCard(
+                          index: index,
                           id: task.id,
                           status: 'Canceled',
                           taskTitle: task.title,
                           taskDescription: task.description,
                           date: dateOnly,
-                          onDelete: () async {
-                            getTaskByStatusController.taskList.removeAt(index);
-                            controller.update();
-                          },
-                          onUpdateRefreshScreen: () async {
-                            await getTask();
-                            controller.update();
-                          },
                         );
                       },
                     ),

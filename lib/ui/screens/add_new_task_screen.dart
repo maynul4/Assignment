@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:task_manager_task/data/service/network_client.dart';
 import 'package:task_manager_task/data/utils/urls.dart';
+import 'package:task_manager_task/ui/controller/add_new_task_controller.dart';
 import 'package:task_manager_task/ui/widgets/pop_up_message.dart';
 import '../widgets/screen_background.dart';
+import 'package:get/get.dart';
 
 class AddNewTaskScreen extends StatefulWidget {
   const AddNewTaskScreen({super.key});
@@ -16,14 +18,10 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _detailsController = TextEditingController();
 
-  VoidCallback? updateAaddTask;
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final args = ModalRoute.of(context)!.settings.arguments as VoidCallback;
-    updateAaddTask = args;
-  }
+  AddNewTaskController addNewTaskController = Get.find<AddNewTaskController>();
+
+  
 
   bool isLoading = false;
 
@@ -81,10 +79,14 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
 
                   ElevatedButton(
                     onPressed: _onTaskSubmit,
-                    child: Visibility(
-                      visible: isLoading == false,
-                      replacement: Center(child: CircularProgressIndicator()),
-                      child: Icon(Icons.arrow_circle_right_outlined),
+                    child: GetBuilder<AddNewTaskController>(
+                      builder: (controller) {
+                        return Visibility(
+                          visible: addNewTaskController.isLoading == false,
+                          replacement: Center(child: CircularProgressIndicator()),
+                          child: Icon(Icons.arrow_circle_right_outlined),
+                        );
+                      }
                     ),
                   ),
                 ],
@@ -109,30 +111,9 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
       "description": _detailsController.text.trim(),
       "status": "New",
     };
-    String url = Urls.createTaskUrl;
-    isLoading = true;
-    setState(() {});
-    NetworkResponse response = await NetworkClient.postRequest(
-      url: url,
-      body: requestBody,
-    );
-    if (response.statusCode == 200) {
-      if (!mounted) return;
-      showPopUp(context, 'Task Added');
-      _titleController.clear();
-      _detailsController.clear();
-      updateAaddTask!();
-    } else {
-      if (response.errorMessage == null) {
-        if (!mounted) return;
-        showPopUp(context, "Something went wrong");
-      } else {
-        if (!mounted) return;
-        showPopUp(context, response.errorMessage);
-      }
-    }
-    isLoading = false;
-    setState(() {});
+    _titleController.clear();
+    _detailsController.clear();
+    await addNewTaskController.createTask(requestBody: requestBody);
   }
 
   @override

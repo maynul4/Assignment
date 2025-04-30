@@ -95,10 +95,6 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
                         taskTitle: task.title,
                         taskDescription: task.description,
                         date: dateOnly,
-                        onUpdateRefreshScreen: () async {
-                          await getTask();
-                          setState(() {});
-                        },
                       );
                     },
                   ),
