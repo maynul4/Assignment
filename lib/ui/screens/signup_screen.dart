@@ -2,9 +2,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/simple/get_state.dart';
 import 'package:task_manager_task/ui/controller/signup_controller.dart';
-import '../../data/service/network_client.dart';
-import '../../data/utils/urls.dart';
-import '../widgets/pop_up_message.dart';
 import '../widgets/screen_background.dart';
 import '../widgets/validator.dart';
 
