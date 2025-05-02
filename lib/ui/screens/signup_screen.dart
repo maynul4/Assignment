@@ -1,5 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_state_manager/src/simple/get_state.dart';
 import 'package:task_manager_task/ui/controller/signup_controller.dart';
 import '../widgets/screen_background.dart';
@@ -211,7 +213,7 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   _onTapSignInButton() {
-    Navigator.pop(context);
+    Get.back();
   }
 
   void _clearAllTextField() {

@@ -7,10 +7,9 @@ class TMAppBar extends StatelessWidget implements PreferredSizeWidget {
   final bool? fromUpdateProfileScreen;
    TMAppBar({super.key, this.fromUpdateProfileScreen,});
 
-   final AuthController authController = Get.find<AuthController>();
-
   @override
   Widget build(BuildContext context) {
+    final AuthController authController = Get.find<AuthController>();
     TextTheme theme = Theme.of(context).textTheme;
     return AppBar(
       backgroundColor: Colors.green,
@@ -73,17 +72,14 @@ class TMAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   _onTapLogOut(context) async {
     await AuthController.clearUserData();
-    Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+    Get.offAllNamed('/login');
   }
 
   @override
   Size get preferredSize => Size.fromHeight(kToolbarHeight);
 
   void _onTapProfileUpdate(BuildContext context) {
-    Navigator.pushNamed(
-      context,
-      '/UpdateProfileScreen',
-    );
+    Get.toNamed('/UpdateProfileScreen');
   }
 
   fullName({required String firstName, required String lastName}) {

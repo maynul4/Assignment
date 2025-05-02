@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:get/get_navigation/get_navigation.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:task_manager_task/controller_binder.dart';
+import 'package:task_manager_task/ui/controller/update_profile_controller.dart';
 import 'package:task_manager_task/ui/screens/add_new_task_screen.dart';
 import 'package:task_manager_task/ui/screens/forget_password_email_verify_screen.dart';
 import 'package:task_manager_task/ui/screens/forget_password_otp_verification_screen.dart';
@@ -24,18 +26,20 @@ class TaskManager extends StatelessWidget {
       navigatorKey: TaskManager.navigatorKey,
       title: 'Task Manager',
       initialRoute: '/splash',
-      routes: {
-        '/splash': (context) => SplashScreen(),
-        '/login': (context) => LoginScreen(),
-        '/register': (context) => SignupScreen(),
-        '/resetPassword': (context) => ResetPasswordScreen(),
-        '/forgetPasswordEmail': (context) => ForgetPasswordEmailVerifyScreen(),
-        '/forgetPasswordPin':
-            (context) => ForgetPasswordOtpVerificationScreen(),
-        '/MainBottomNavScreen': (context) => MainBottomNavScreen(),
-        '/AddNewTaskScreen': (context) => AddNewTaskScreen(),
-        '/UpdateProfileScreen': (context) => UpdateProfileScreen(),
-      },
+      getPages: [
+        GetPage(name: '/splash', page: () => SplashScreen()),
+        GetPage(name: '/login', page: () => LoginScreen()),
+        GetPage(name: '/register', page: () => SignupScreen()),
+        GetPage(name: '/resetPassword', page: () => ResetPasswordScreen()),
+        GetPage(name: '/forgetPasswordEmail', page: () => ForgetPasswordEmailVerifyScreen()),
+        GetPage(name: '/forgetPasswordOtp', page: () => ForgetPasswordOtpVerificationScreen()),
+        GetPage(name: '/MainBottomNavScreen', page: () => MainBottomNavScreen()),
+        GetPage(name: '/AddNewTaskScreen', page: () => AddNewTaskScreen()),
+        GetPage(name: '/UpdateProfileScreen', page: () => UpdateProfileScreen(),
+          binding: BindingsBuilder(() {
+          Get.lazyPut(() => UpdateProfileController());
+        }),),
+      ],
       theme: ThemeData(
         colorSchemeSeed: Colors.green,
         textTheme: TextTheme(

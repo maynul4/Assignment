@@ -1,9 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:task_manager_task/data/service/network_client.dart';
-import 'package:task_manager_task/ui/widgets/pop_up_message.dart';
-import '../../data/utils/urls.dart';
+import 'package:task_manager_task/ui/controller/reset_password_controller.dart';
 import '../widgets/screen_background.dart';
+import 'package:get/get.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
   const ResetPasswordScreen({super.key});
@@ -22,6 +21,8 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   bool _passwordVisibility = true;
   bool _cfmPasswordVisibility = true;
 
+  ResetPasswordController resetPasswordController = Get.find<ResetPasswordController>();
+
   pswVisibilityControl({required bool isCfmPsw}) {
     if (isCfmPsw == false) {
       setState(() {
@@ -34,15 +35,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     }
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final arguments = ModalRoute.of(context)!.settings.arguments;
-    receivedEmailAndOtp = arguments as Map<String, dynamic>;
-  }
-
-  Map<String, dynamic>? receivedEmailAndOtp;
-  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -118,13 +110,17 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
                   ElevatedButton(
                     onPressed: _onTapSubmit,
-                    child: Visibility(
-                      visible: isLoading == false,
-                      replacement: Padding(
-                        padding: EdgeInsets.all(3),
-                        child: CircularProgressIndicator(),
-                      ),
-                      child: Icon(Icons.arrow_circle_right_outlined),
+                    child: GetBuilder<ResetPasswordController>(
+                      builder: (controller) {
+                        return Visibility(
+                          visible: controller.isLoading == false,
+                          replacement: Padding(
+                            padding: EdgeInsets.all(3),
+                            child: CircularProgressIndicator(),
+                          ),
+                          child: Icon(Icons.arrow_circle_right_outlined),
+                        );
+                      }
                     ),
                   ),
 
@@ -160,7 +156,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   }
 
   _onTapSignInButton() {
-    Navigator.pushNamed(context, '/login');
+    Get.toNamed('/login');
   }
 
   _onTapSubmit() {
@@ -171,31 +167,13 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   }
 
   Future<void> resetPassword() async {
-    isLoading = true;
-    setState(() {});
+    String password = _passwordTEController.text;
 
-    String newPassword = _passwordTEController.text;
-    Map<String, dynamic> requestBody = {
-      "email": receivedEmailAndOtp!['email'],
-      "OTP": receivedEmailAndOtp!['OTP'],
-      "password": newPassword,
-    };
-    String url = Urls.resetPasswordRrl;
-    NetworkResponse response = await NetworkClient.postRequest(
-      url: url,
-      body: requestBody,
-    );
-    if (response.statusCode == 200) {
-      if (!mounted) return;
-      showPopUp(context, 'Password reset successful');
-      Navigator.pushNamedAndRemoveUntil(
-        context,
-        '/login',
-        (predicate) => false,
-      );
+    bool isSuccess = await resetPasswordController.resetPassword(password: password);
+    if(isSuccess){
+      Get.offNamedUntil('/login',(route)=>false);
     }
-    isLoading = false;
-    setState(() {});
+
   }
 
   @override

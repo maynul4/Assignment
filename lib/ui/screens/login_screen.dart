@@ -145,22 +145,20 @@ class _LoginScreenState extends State<LoginScreen> {
     final bool isSuccess = await loginController.logIn(email: _emailTEController.text.trim(), password: _passwordTEController.text);
     if (isSuccess && AuthController.userInfoModel != null) {
       if(!mounted)return;
-      Navigator.pushNamedAndRemoveUntil(
-        context,
-        '/MainBottomNavScreen',
-        (routes) => false,
-      );
+
+      Get.offAllNamed('/MainBottomNavScreen');
+
     } else {
       //failed Login will manged from networkClient
     }
   }
 
   _onTapSignUpButton() {
-    Navigator.pushNamed(context, '/register');
+    Get.toNamed('/register');
   }
 
   _onTapForgotPasswordButton() {
-    Navigator.pushNamed(context, '/forgetPasswordEmail');
+    Get.toNamed('/forgetPasswordEmail');
   }
 
   _onTapPasswordVisibilityChange() {

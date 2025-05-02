@@ -17,6 +17,9 @@ class UpdateProfileController extends GetxController{
 
   }) async {
 
+    _isLoading = true;
+    update();
+
     NetworkResponse response = await NetworkClient.postRequest(
       url: Urls.updateProfileUrl,
       body: requestBody,
@@ -26,11 +29,12 @@ class UpdateProfileController extends GetxController{
     } else {
       _logger.e(response.errorMessage);
     }
+    _isLoading = false;
+    update();
   }
 
   Future<void> getProfileDetails() async {
-    _isLoading = true;
-    update();
+
 
     NetworkResponse response = await NetworkClient.getRequest(
       url: Urls.profileDetailsUrl,
@@ -59,7 +63,5 @@ class UpdateProfileController extends GetxController{
       await AuthController.saveUserInformation(token, userModel);
       await AuthController.getUserInformation();
     }
-    _isLoading = false;
-    update();
   }
 }

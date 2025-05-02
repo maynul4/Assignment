@@ -128,15 +128,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
   }
 
   _onTapAddTask() {
-    Navigator.pushNamed(
-      context,
-      '/AddNewTaskScreen',
-      arguments: () {
-        getAllTaskStatusCount();
-        getTask();
-        setState(() {});
-      },
-    );
+    Get.toNamed('/AddNewTaskScreen');
   }
 
   Future<void> getAllTaskStatusCount() async {

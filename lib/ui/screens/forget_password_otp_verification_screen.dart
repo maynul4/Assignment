@@ -1,10 +1,11 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
-import 'package:task_manager_task/data/service/network_client.dart';
-import 'package:task_manager_task/data/utils/urls.dart';
-import 'package:task_manager_task/ui/widgets/pop_up_message.dart';
+import 'package:task_manager_task/ui/controller/forget_password_email_verification_controller.dart';
+import 'package:task_manager_task/ui/controller/forget_password_otp_verification_controller.dart';
+import 'package:task_manager_task/ui/screens/reset_password_screen.dart';
 import '../widgets/screen_background.dart';
+import 'package:get/get.dart';
 
 class ForgetPasswordOtpVerificationScreen extends StatefulWidget {
   const ForgetPasswordOtpVerificationScreen({super.key});
@@ -20,17 +21,13 @@ class _ForgetPasswordOtpVerificationScreenState
 
   final TextEditingController _otpTEController = TextEditingController();
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final argument = ModalRoute.of(context)!.settings.arguments;
-    receivedEmail = argument as String;
-  }
+  final ForgetPasswordEmailVerificationController
+  forgetPasswordEmailVerificationController =
+      Get.find<ForgetPasswordEmailVerificationController>();
 
-  String? receivedEmail;
-
-  bool isLoading = false;
-  bool _isDisposed = false;
+  final ForgetPasswordOTPVerificationController
+  forgetPasswordOTPVerificationController =
+      Get.find<ForgetPasswordOTPVerificationController>();
 
   @override
   Widget build(BuildContext context) {
@@ -90,14 +87,18 @@ class _ForgetPasswordOtpVerificationScreenState
                   const SizedBox(height: 10),
                   ElevatedButton(
                     onPressed: _onTapSubmit,
-                    child: Visibility(
-                      visible: isLoading == false,
-                      replacement: Padding(
-                        padding: const EdgeInsets.all(3.0),
-                        child: CircularProgressIndicator(),
-                      ),
+                    child: GetBuilder<ForgetPasswordOTPVerificationController>(
+                      builder: (controller) {
+                        return Visibility(
+                          visible: controller.isLoading == false,
+                          replacement: Padding(
+                            padding: const EdgeInsets.all(3.0),
+                            child: CircularProgressIndicator(),
+                          ),
 
-                      child: Icon(Icons.arrow_circle_right_outlined),
+                          child: Icon(Icons.arrow_circle_right_outlined),
+                        );
+                      },
                     ),
                   ),
 
@@ -140,38 +141,16 @@ class _ForgetPasswordOtpVerificationScreenState
 
   Future<void> forgetPasswordOTPVerify() async {
     final String otp = _otpTEController.text;
-    if (_isDisposed) return;
 
-    Map<String,dynamic> authDataForSetPassword= {'email': receivedEmail, 'OTP': otp};
-
-
-    isLoading = true;
-    setState(() {});
-
-    String url = Urls.forgetPasswordEmailAndOPTVerifyUrl(
-      email: receivedEmail,
-      otp: otp,
-    );
-    NetworkResponse response = await NetworkClient.getRequest(url: url);
-    if (_isDisposed) return;
-    _otpTEController.clear();
-    if (!mounted) return;
-    if (response.statusCode == 200) {
-      Navigator.pushNamedAndRemoveUntil(
-        context,
-        '/resetPassword',
-        (route) => false,
-        arguments: authDataForSetPassword,
-      );
-      return;
-    } else {
-      showPopUp(context, 'Invalid OTP !!!', true);
+    bool isSuccess = await forgetPasswordOTPVerificationController
+        .forgetPasswordOTPVerify(otp: otp);
+    if (isSuccess) {
+      Get.offNamedUntil('/resetPassword',(route)=>false);
     }
-    isLoading = false;
-    setState(() {});
+    return;
   }
+
   _onTapSignInButton() {
-    if (_isDisposed) return;
-    Navigator.pushNamed(context, '/login');
+    Get.offNamedUntil('/login',(route)=>false);
   }
 }

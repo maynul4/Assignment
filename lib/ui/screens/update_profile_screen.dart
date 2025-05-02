@@ -26,25 +26,27 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
   bool passwordVisibility = true;
 
+  XFile? pickedImage;
+
+  // Initializing the controller to handle profile update
+  final UpdateProfileController updateProfileController = Get.find<UpdateProfileController>();
+
+  // Toggling password visibility
   _passwordVisibilityStateControl() {
     setState(() {
       passwordVisibility = !passwordVisibility;
     });
   }
 
-  XFile? pickedImage;
-
-
-  UpdateProfileController updateProfileController = Get.find<UpdateProfileController>();
-
   @override
   void initState() {
+    super.initState();
+    // Pre-filling the form with existing user data.
     UserModel userModel = AuthController.userInfoModel!;
     _emailTEController.text = userModel.email;
     _firstNameTEController.text = userModel.firstName;
     _lastNameTEController.text = userModel.lastName;
     _mobileTEController.text = userModel.mobile;
-    super.initState();
   }
 
   @override
@@ -55,7 +57,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Form(
-            key: _formKey,
+            key: _formKey, // Added form key for validation
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -70,6 +72,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                   _buildPhotoPickerWidgets(),
                   SizedBox(height: 10),
 
+                  // Email field with disabled input as it's non-editable
                   TextFormField(
                     keyboardType: TextInputType.emailAddress,
                     textInputAction: TextInputAction.next,
@@ -78,25 +81,51 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     decoration: InputDecoration(hintText: 'Email'),
                   ),
                   SizedBox(height: 10),
+
+                  // First Name field with validation
                   TextFormField(
                     textInputAction: TextInputAction.next,
                     controller: _firstNameTEController,
                     decoration: InputDecoration(hintText: 'First Name'),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your first name';
+                      }
+                      return null;
+                    },
                   ),
                   SizedBox(height: 10),
+
+                  // Last Name field with validation
                   TextFormField(
                     textInputAction: TextInputAction.next,
                     controller: _lastNameTEController,
                     decoration: InputDecoration(hintText: 'Last Name'),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your last name';
+                      }
+                      return null;
+                    },
                   ),
                   SizedBox(height: 10),
+
+                  // Mobile field with validation
                   TextFormField(
                     keyboardType: TextInputType.number,
                     textInputAction: TextInputAction.next,
                     controller: _mobileTEController,
                     decoration: InputDecoration(hintText: 'Mobile'),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your mobile number';
+                      }
+                      return null;
+                    },
                   ),
                   SizedBox(height: 10),
+
+                  // Password field with visibility toggle
                   TextFormField(
                     obscureText: !passwordVisibility,
                     textInputAction: TextInputAction.next,
@@ -104,27 +133,27 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     decoration: InputDecoration(
                       suffixIcon: IconButton(
                         onPressed: _passwordVisibilityStateControl,
-                        icon:
-                            passwordVisibility
-                                ? Icon(Icons.visibility)
-                                : Icon(Icons.visibility_off),
+                        icon: passwordVisibility
+                            ? Icon(Icons.visibility)
+                            : Icon(Icons.visibility_off),
                       ),
                       hintText: 'Password',
                     ),
                   ),
                   SizedBox(height: 10),
 
+                  // Submit button with loading indicator
                   Visibility(
-
                     child: ElevatedButton(
                       onPressed: _onTapSubmit,
                       child: GetBuilder<UpdateProfileController>(
-                        builder: (context) {
-                          return Visibility(
-                            visible: updateProfileController.isLoading == false,
+                          builder: (context) {
+                            return Visibility(
+                              visible: updateProfileController.isLoading == false,
                               replacement: CircularProgressIndicator(),
-                              child: Icon(Icons.arrow_circle_right_outlined));
-                        }
+                              child: Icon(Icons.arrow_circle_right_outlined),
+                            );
+                          }
                       ),
                     ),
                   ),
@@ -137,6 +166,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     );
   }
 
+  // Photo picker widget
   Widget _buildPhotoPickerWidgets() {
     return GestureDetector(
       onTap: _onTapPhotoPicker,
@@ -177,31 +207,33 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     );
   }
 
+  // Submit button handler
   _onTapSubmit() async {
-    bool isUserMadeAnyChange = pickedImage != null ||
-    AuthController.userInfoModel?.firstName != _firstNameTEController.text.trim() ||
-    AuthController.userInfoModel?.lastName != _lastNameTEController.text.trim() ||
-    AuthController.userInfoModel?.mobile != _mobileTEController.text.trim();
-    bool isPasswordChange = _passwordTEController.text.trim().isNotEmpty;
-    if(isUserMadeAnyChange || isPasswordChange ) {
-      await updateProfile();
-      _passwordTEController.clear();
-    }else{
-      showPopUp(context, 'You did not make any changes to update.', true);
+    if (_formKey.currentState!.validate()) { // Validate the form
+      bool isUserMadeAnyChange = pickedImage != null ||
+          AuthController.userInfoModel?.firstName != _firstNameTEController.text.trim() ||
+          AuthController.userInfoModel?.lastName != _lastNameTEController.text.trim() ||
+          AuthController.userInfoModel?.mobile != _mobileTEController.text.trim();
+      bool isPasswordChange = _passwordTEController.text.trim().isNotEmpty;
+
+      // Check if there are any changes or password update
+      if (isUserMadeAnyChange || isPasswordChange) {
+        await updateProfile();
+        _passwordTEController.clear(); // Clear password field after submit
+      } else {
+        showPopUp(context, 'You did not make any changes to update.', true);
+      }
     }
   }
 
-
-
-
+  // Photo picker handler
   _onTapPhotoPicker() {
-    // imagePicker();
     showAlertDialogue();
   }
 
   bool isCamera = true;
 
-
+  // Profile update logic
   Future<void> updateProfile() async {
     Map<String, dynamic> requestBody = {
       "email": _emailTEController.text.trim(),
@@ -220,8 +252,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     await updateProfileController.updateProfile(requestBody: requestBody);
   }
 
-
-
+  // Image picker logic for camera or gallery
   Future<void> imagePicker() async {
     final picker = ImagePicker();
     final pickFile = await picker.pickImage(
@@ -234,6 +265,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     }
   }
 
+  // Dialog for choosing between camera and gallery
   void showAlertDialogue() {
     showDialog(
       context: context,

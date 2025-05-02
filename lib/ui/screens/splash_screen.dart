@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:task_manager_task/ui/controller/auth_controller.dart';
 import '../utils/assets_path.dart';
 import '../widgets/screen_background.dart';
@@ -27,11 +29,14 @@ class _SplashScreenState extends State<SplashScreen> {
     if (!mounted) return;
     // Navigator.pushNamedAndRemoveUntil(context, '/login',(routes)=>false);
 
-    Navigator.pushNamedAndRemoveUntil(
-      context,
-      isLoggedIn ? '/MainBottomNavScreen' : '/login',
-      (routes) => false,
-    );
+    // Navigator.pushNamedAndRemoveUntil(
+    //   context,
+    //   isLoggedIn ? '/MainBottomNavScreen' : '/login',
+    //   (routes) => false,
+    // );
+
+    Get.offNamedUntil(isLoggedIn ? '/MainBottomNavScreen' : '/login',(route)=>false);
+
   }
 
   @override

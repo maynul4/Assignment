@@ -1,10 +1,9 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:task_manager_task/data/service/network_client.dart';
-import 'package:task_manager_task/data/utils/urls.dart';
-import 'package:task_manager_task/ui/widgets/pop_up_message.dart';
+import 'package:task_manager_task/ui/controller/forget_password_email_verification_controller.dart';
 import '../widgets/screen_background.dart';
 import '../widgets/validator.dart';
+import 'package:get/get.dart';
 
 class ForgetPasswordEmailVerifyScreen extends StatefulWidget {
   const ForgetPasswordEmailVerifyScreen({super.key});
@@ -20,6 +19,8 @@ class _ForgetPasswordEmailVerifyScreenState
 
   final TextEditingController _emailTEController = TextEditingController();
   bool isLoading = false;
+
+  final ForgetPasswordEmailVerificationController forgetPasswordEmailVerificationController = Get.find<ForgetPasswordEmailVerificationController>();
 
   @override
   Widget build(BuildContext context) {
@@ -67,13 +68,17 @@ class _ForgetPasswordEmailVerifyScreenState
 
                   ElevatedButton(
                     onPressed: _onTapSubmit,
-                    child: Visibility(
-                      visible: isLoading == false,
-                      replacement: Padding(
-                        padding: const EdgeInsets.all(3.0),
-                        child: CircularProgressIndicator(),
-                      ),
-                      child: Icon(Icons.arrow_circle_right_outlined),
+                    child: GetBuilder<ForgetPasswordEmailVerificationController>(
+                      builder: (controller) {
+                        return Visibility(
+                          visible: controller.isLoading == false,
+                          replacement: Padding(
+                            padding: const EdgeInsets.all(3.0),
+                            child: CircularProgressIndicator(),
+                          ),
+                          child: Icon(Icons.arrow_circle_right_outlined),
+                        );
+                      }
                     ),
                   ),
 
@@ -115,33 +120,15 @@ class _ForgetPasswordEmailVerifyScreenState
   }
 
   Future<void> forgetPasswordEmailVerify() async {
-    isLoading = true;
-    setState(() {});
-    String email = _emailTEController.text.trim();
-
-    String url = Urls.forgetPasswordEmailVerifyUrl(email);
-
-    NetworkResponse response = await NetworkClient.getRequest(url: url);
-    if (response.statusCode == 200) {
-      if (!mounted) return;
-      Navigator.pushNamedAndRemoveUntil(
-        context,
-        '/forgetPasswordPin',
-        (route) => false,
-        arguments: email,
-      );
-    } else {
-      isLoading = false;
-      setState(() {});
-      if (!mounted) return;
-      showPopUp(context, 'Email not found', true);
-    }
-    isLoading = false;
-    setState(() {});
+   String email = _emailTEController.text.trim();
+   bool isSuccess = await forgetPasswordEmailVerificationController.forgetPasswordEmailVerify(email: email);
+   if(isSuccess){
+     Get.toNamed('/forgetPasswordOtp');
+   }return;
   }
 
   _onTapSignInButton() {
-    Navigator.pop(context);
+    Get.back();
   }
 
   @override
