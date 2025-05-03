@@ -43,6 +43,7 @@ dependencies:
   shared_preferences: ^2.5.3
   custom_refresh_indicator: ^4.0.1
   get: ^4.7.2
+  firebase_core: ^3.13.0
 
 
 dev_dependencies:

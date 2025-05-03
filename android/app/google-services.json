@@ -1,0 +1,105 @@
+{
+  "project_info": {
+    "project_number": "963514549159",
+    "project_id": "sodaimart-421115",
+    "storage_bucket": "sodaimart-421115.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:963514549159:android:2b546ee03dec70cfbb6c82",
+        "android_client_info": {
+          "package_name": "com.example.task_manager_task"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDFDXD1Aq_uAqshADhKlm970Au1hq7qxSM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:963514549159:android:9d5041fdf5429b49bb6c82",
+        "android_client_info": {
+          "package_name": "com.sodaimart.sodaitmar_delivary_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDFDXD1Aq_uAqshADhKlm970Au1hq7qxSM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:963514549159:android:dcd3d00839e7f8e4bb6c82",
+        "android_client_info": {
+          "package_name": "com.sodaimart.sodaitmar_store_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDFDXD1Aq_uAqshADhKlm970Au1hq7qxSM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:963514549159:android:b9c48811d612e635bb6c82",
+        "android_client_info": {
+          "package_name": "com.sodaimart.top.sixam_mart_delivery_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDFDXD1Aq_uAqshADhKlm970Au1hq7qxSM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:963514549159:android:4317ab232cc1d5ecbb6c82",
+        "android_client_info": {
+          "package_name": "top.sodaimart.sodaimart"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDFDXD1Aq_uAqshADhKlm970Au1hq7qxSM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
